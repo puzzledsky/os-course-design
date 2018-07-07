@@ -37,8 +37,9 @@ void Window::on_cLB_Login_clicked()
         string pwd=qpwd.toStdString();
         int v=Users::loginIn(name,pwd);
         if(v==1){
-            form=new SubForm();
+            form=new SubForm(this,QString::fromStdString(name));
             form->show();
+            form->setName(QString::fromStdString(name));
         }
         else if(v==-1){
             QMessageBox::critical(login,"登陆失败","用户不存在！");
