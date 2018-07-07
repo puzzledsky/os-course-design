@@ -10,13 +10,16 @@ SubForm::SubForm(QWidget *parent) :
 {
     ui->setupUi(this);
     isEdit = false;
+    endEdit = false;
 
     ui->textEdit->setFocus();
     ui->textEdit->installEventFilter(this);
 
     ui->textEdit->setTextColor(QColor(255,0,255));
-    ui->textEdit->append("$ ");
+//    ui->textEdit->append(QString::fromStdString(THIS->getName()) + "   /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+    ui->textEdit->append(name + "   /" + name + "\n$ ");
     ui->textEdit->setTextColor(QColor(0,0,0));
+
 
 }
 
@@ -61,12 +64,15 @@ void SubForm::getFun()
         if(mlings.size() == 2){
             if(mlings[mling] == vi){
                 isEdit = true;
-                editFile();
+                ui->textEdit->clear();
+            }else if(mlings.at(mling) == rm){
+
+            }else if(mlings.at(mling) == cat){
+
             }
         }else{
             outputerror();
         }
-
     }else if(mlings[mling] == ls){
         if(mlings.size() == 2){
             QString t = mlings[1];
@@ -105,15 +111,10 @@ void SubForm::outputerror()
     ui->textEdit->setTextColor(QColor(0,0,0));
 }
 
-void SubForm::editFile()
-{
-    ui->textEdit->clear();
-}
-
 void SubForm::setName(QString string)
 {
     name = string;
-//    THIS = dir;
+    THIS = HOME->in(name.toStdString());
 }
 
 bool SubForm::eventFilter(QObject *obj, QEvent *event)
@@ -125,17 +126,40 @@ bool SubForm::eventFilter(QObject *obj, QEvent *event)
                     returnReaction();
                     return true;
                 }
+                if(endEdit && keyEvent->key() == Qt::Key_Return){
+                    storeFile();
+                    endEdit = false;
+                    return true;
+                }
                 if(isEdit && keyEvent->key() == Qt::Key_F1){
                     //添加操作，当按下F1键时结束写文件
                     newfile = ui->textEdit->toPlainText();
-                    ui->textEdit->clear();
                     ui->textEdit->setTextColor(QColor(255,0,255));
-                    ui->textEdit->append("$ ");
+                    ui->textEdit->clear();
+                    ui->textEdit->append("end of file\n$ ");
                     ui->textEdit->setTextColor(QColor(0,0,0));
-                    isEdit = false;
+                    endEdit = true;
                     return true;
                 }
         }
     }
     return QWidget::eventFilter(obj,event);
+}
+
+void SubForm::storeFile(){
+    QString t = ui->textEdit->toPlainText();
+    QStringList mlist = t.split("\n");
+    t = mlist[mlist.size()-1];
+    if(t == "$ :wq"){
+        //新建一个文件
+        isEdit = false;
+    }else{
+        ui->textEdit->setTextColor(QColor(255,0,0));
+        ui->textEdit->append("illegal!");
+        ui->textEdit->setTextColor(QColor(0,0,0));
+        ui->textEdit->setTextColor(QColor(255,0,255));
+        ui->textEdit->append("\n$ ");
+        ui->textEdit->setTextColor(QColor(0,0,0));
+    }
+
 }
