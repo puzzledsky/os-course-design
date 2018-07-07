@@ -140,6 +140,7 @@ private:
 	string name[100];
 	int nsub;
 
+    //获得空闲节点
 	int getFree() {
 		if (nsub == 100)
 			return -1;
@@ -154,9 +155,13 @@ private:
 			nsub++;
 		return p;
 	}
+
+    //inode号为n对应的目录
 	static dir* getDir(int n) {
 		return INODE[n].pdir;
 	}
+
+    //返回父亲节点指针
 	dir* getParent() {
 		return getDir(num[0]);
 	}

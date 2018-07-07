@@ -4,37 +4,42 @@
 #include <iostream>
 using namespace std;
 
-SubForm::SubForm(QWidget *parent) :
+SubForm::SubForm(QWidget *parent, QString string) :
     QDialog(parent),
     ui(new Ui::SubForm)
 {
     ui->setupUi(this);
     isEdit = false;
     endEdit = false;
-
+    name = string;
     ui->textEdit->setFocus();
     ui->textEdit->installEventFilter(this);
 
     ui->textEdit->setTextColor(QColor(255,0,255));
-//    ui->textEdit->append(QString::fromStdString(THIS->getName()) + "   /" + QString::fromStdString(THIS->getName()) + "\n$ ");
-    ui->textEdit->append(name + "   /" + name + "\n$ ");
+    ui->textEdit->append(name + " /" + name + "\n$ ");
     ui->textEdit->setTextColor(QColor(0,0,0));
 
 
 }
 
+void SubForm::setName(QString string)
+{
+    name = string;
+    THIS = HOME->in(name.toStdString());
+}
+
 SubForm::~SubForm()
 {
+    Users::loginOut(name.toStdString());
     delete ui;
 }
 
 //没有编辑文件时按下enter键时的操作
 void SubForm::returnReaction()
 {
-    this->reactionFunction();
     if(!isEdit){
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append("\n$ ");
+        ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
 }
@@ -68,16 +73,23 @@ void SubForm::getFun()
             }else if(mlings.at(mling) == rm){
 
             }else if(mlings.at(mling) == cat){
-
+                //显示文件内容
+                QString tt = mlings.at(1);
+                string s = THIS->readFile(tt.toStdString());
+                if(!s.empty()){
+                    ui->textEdit->append(QString::fromStdString(s));
+                }else{
+                    outputerror("File not exit!");
+                }
             }
         }else{
-            outputerror();
+            outputerror("Input error!");
         }
     }else if(mlings[mling] == ls){
         if(mlings.size() == 2){
             QString t = mlings[1];
             if(!t.startsWith("/") || t.endsWith("/")){
-                outputerror();
+                outputerror("Input error!");
             }
             int tt = 0;
             QStringList temp = t.split("/");
@@ -91,31 +103,29 @@ void SubForm::getFun()
                 }else{
                     tt++;
                     if(tt == 2){
-                        outputerror();
+                        outputerror("Input error!");
                         break;
                     }
                 }
             }
         }else{
-            outputerror();
+            outputerror("Input error!");
         }
     }else{
-        outputerror();
+        outputerror("Input error!");
     }
 }
 
-void SubForm::outputerror()
+void SubForm::outputerror(QString string)
 {
+    ui->textEdit->setTextColor(QColor(255,0,255));
+    ui->textEdit->append(QString::fromStdString("\n" + THIS->getName()) + " /" + QString::fromStdString(THIS->getName()));
     ui->textEdit->setTextColor(QColor(255,0,0));
-    ui->textEdit->append("input error!");
+    ui->textEdit->append(string);
     ui->textEdit->setTextColor(QColor(0,0,0));
 }
 
-void SubForm::setName(QString string)
-{
-    name = string;
-    THIS = HOME->in(name.toStdString());
-}
+
 
 bool SubForm::eventFilter(QObject *obj, QEvent *event)
 {
@@ -123,12 +133,12 @@ bool SubForm::eventFilter(QObject *obj, QEvent *event)
         if (event->type() == QEvent::KeyPress) {
                 QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
                 if(!isEdit && keyEvent->key() == Qt::Key_Return){
+                    reactionFunction();
                     returnReaction();
                     return true;
                 }
                 if(endEdit && keyEvent->key() == Qt::Key_Return){
                     storeFile();
-                    endEdit = false;
                     return true;
                 }
                 if(isEdit && keyEvent->key() == Qt::Key_F1){
@@ -152,13 +162,21 @@ void SubForm::storeFile(){
     t = mlist[mlist.size()-1];
     if(t == "$ :wq"){
         //新建一个文件
+        t = mlings.at(1);
+        THIS->addFile(t.toStdString());
+        THIS->writeFile(t.toStdString(),newfile.toStdString());
+        outputerror("File store success!");
+        ui->textEdit->setTextColor(QColor(255,0,255));
+        ui->textEdit->append(QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+        ui->textEdit->setTextColor(QColor(0,0,0));
         isEdit = false;
+        endEdit = false;
     }else{
         ui->textEdit->setTextColor(QColor(255,0,0));
         ui->textEdit->append("illegal!");
         ui->textEdit->setTextColor(QColor(0,0,0));
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append("\n$ ");
+        ui->textEdit->append(QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
 
