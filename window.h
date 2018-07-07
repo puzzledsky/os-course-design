@@ -2,6 +2,8 @@
 #define WINDOW_H
 
 #include <QWidget>
+#include <QMessageBox>
+//#include <bits/stdc++.h>
 #include "file.h"
 #include "login.h"
 #include "subform.h"

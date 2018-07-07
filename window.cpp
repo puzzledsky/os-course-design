@@ -16,23 +16,30 @@ Window::~Window()
     delete ui;
 }
 
-//void Window::on_pushButton_clicked()
-//{
-//    form = new SubForm(this);
-//    form->setModal(false);
-//    form->show();
-//}
-
 void Window::on_cLB_Login_clicked()
 {
     login = new Login(this);
-    //login->show();
-    if(login->exec()==QDialog::Accepted){
-        //todo:验证账密
-        form=new SubForm();
-        form->show();
-    }
 
+    if(login->exec()==QDialog::Accepted){
+        QString qname=login->getname();
+        QString qpwd=login->getpwd();
+        string name=qname.toStdString();
+        string pwd=qpwd.toStdString();
+        int v=Users::loginIn(name,pwd);
+        if(v==1){
+            form=new SubForm();
+            form->show();
+        }
+        else if(v==-1){
+            QMessageBox::critical(login,"登陆失败","用户不存在！");
+        }
+        else if(v==0){
+            QMessageBox::critical(login,"登陆失败","用户已登录！");
+        }
+        else if(v==-2){
+            QMessageBox::critical(login,"登陆失败","密码错误！");
+        }
+    }
 }
 
 void Window::on_cLB_openCatalog_clicked()
@@ -45,6 +52,16 @@ void Window::on_cLB_adduser_clicked()
 {
     adduser=new Dialog_adduser(this);
     if(adduser->exec()==QDialog::Accepted){
-
+        QString qname=adduser->getname();
+        QString qpwd=adduser->getpwd();
+        string name=qname.toStdString();
+        string pwd=qpwd.toStdString();
+        int v=Users::addUser(name,pwd);
+        if(v==true){
+            adduser->close();
+        }
+        else{
+           QMessageBox::critical(adduser,"添加失败","用户名已存在！");
+        }
     }
 }
