@@ -126,8 +126,6 @@ public:
 };
 extern inode INODE[BLOCKTOI * ISIZE];
 
-
-
 class memory {
 	
 };

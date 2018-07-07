@@ -48,4 +48,4 @@ FORMS += \
     widget_catalog.ui
 
 RESOURCES += \
-    shutdown.qrc
+    button.qrc
