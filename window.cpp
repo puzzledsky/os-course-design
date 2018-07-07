@@ -28,8 +28,11 @@ void Window::on_cLB_Login_clicked()
     login = new Login(this);
     //login->show();
     if(login->exec()==QDialog::Accepted){
-
+        //todo:验证账密
+        form=new SubForm();
+        form->show();
     }
+
 }
 
 void Window::on_cLB_openCatalog_clicked()
