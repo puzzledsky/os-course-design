@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/shutdown_bt">
+        <file>shutdown_black.ico</file>
+        <file>shutdown_grey.ico</file>
+        <file>shutdown_red.ico</file>
+    </qresource>
+    <qresource prefix="/arrow">
+        <file>arrow_left_blue.ico</file>
+        <file>arrow_right_bluet.ico</file>
+        <file>arrow_up_blue.ico</file>
+        <file>back_green.ico</file>
+        <file>download_green.ico</file>
+        <file>forward_green.ico</file>
+        <file>upward_green.ico</file>
+    </qresource>
+</RCC>

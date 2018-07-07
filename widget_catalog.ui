@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>867</width>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>30</y>
+     <y>70</y>
      <width>161</width>
-     <height>192</height>
+     <height>401</height>
     </rect>
    </property>
    <column>
@@ -42,6 +42,104 @@
      <string>dev</string>
     </property>
    </item>
+  </widget>
+  <widget class="QTableWidget" name="table_file">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>70</y>
+     <width>631</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <attribute name="verticalHeaderMinimumSectionSize">
+    <number>15</number>
+   </attribute>
+   <column>
+    <property name="text">
+     <string>文件名</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>inode号</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>修改日期</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>大小</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>创建者</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>访问权限2</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>访问权限1</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string/>
+    </property>
+   </column>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>20</y>
+     <width>551</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>20</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/arrow/upward_green.ico);
+border-image: url(:/arrow/arrow_up_blue.ico);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>20</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+border-image: url(:/arrow/forward_green.ico);
+border-image: url(:/arrow/arrow_right_bluet.ico);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
   </widget>
  </widget>
  <tabstops>
