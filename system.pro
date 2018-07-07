@@ -27,13 +27,25 @@ SOURCES += \
         main.cpp \
         window.cpp \
     file.cpp \
-    subform.cpp
+    subform.cpp \
+    login.cpp \
+    dialog_adduser.cpp \
+    widget_catalog.cpp
 
 HEADERS += \
         window.h \
     file.h \
-    subform.h
+    subform.h \
+    login.h \
+    dialog_adduser.h \
+    widget_catalog.h
 
 FORMS += \
         window.ui \
-    subform.ui
+    subform.ui \
+    login.ui \
+    dialog_adduser.ui \
+    widget_catalog.ui
+
+RESOURCES += \
+    shutdown.qrc

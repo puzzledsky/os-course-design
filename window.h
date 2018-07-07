@@ -3,7 +3,10 @@
 
 #include <QWidget>
 #include "file.h"
+#include "login.h"
 #include "subform.h"
+#include "widget_catalog.h"
+#include "dialog_adduser.h"
 
 namespace Ui {
 class Window;
@@ -18,11 +21,20 @@ public:
     ~Window();
 
 private slots:
-    void on_pushButton_clicked();
+
+
+    void on_cLB_Login_clicked();
+
+    void on_cLB_openCatalog_clicked();
+
+    void on_cLB_adduser_clicked();
 
 private:
     Ui::Window *ui;
     SubForm *form;
+    Login *login;
+    widget_catalog *catalog;
+    Dialog_adduser *adduser;
 };
 
 #endif // WINDOW_H
