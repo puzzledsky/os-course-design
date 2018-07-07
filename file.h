@@ -9,13 +9,16 @@ using namespace std;
 const int SIZE = 210;
 const int ISIZE = 10;
 const int DSIZE = 200;
+const int BLOCKSIZE = 8;
 /*
 用户问题
 文件权限问题
 删除目录没删子目录和对象
 */
+
 class dir;
-class filsys;
+class inode;
+
 class block {
 public:
 	string data = "";//大小为512
@@ -23,25 +26,50 @@ public:
 extern bool B_FLAG[SIZE];//是否已使用
 extern block BLOCK[SIZE];
 
+class filsys {//超级块
+private:
+	static const int IFULL = 50;
+	static const int DFULL = 100;
+
+	int isize;  //inode区总块数
+	int dsize;  //存储区总块数
+	int ifree[IFULL];  //inode空闲队列
+	int dfree[DFULL];  //存储区空闲队列
+	int ninode;  //inode空闲队列长度
+	int ndata;  //存储区空闲队列长度
+public:
+	filsys();
+	void init();
+	void i_setFree();
+	void d_setFree();
+	int i_get();
+	int d_get();
+	int i_put(int);
+	int d_put(int);
+};
+extern filsys sblock;
+
 class inode {
 private:
 	string data;
 	void write() {
 		int i = 0;
 		for (; i < 8; i++) {
-			if (data.length() >(i + 1) * 512) {
-				//cout << "* " << i << " " << data.substr(i * 512, 512) << endl;
-				BLOCK[ISIZE + addr[i]].data = data.substr(i * 512, 512);
+			if (addr[i] == -1) {
+				addr[i] = sblock.d_get();
+			}
+			if (data.length() >(i + 1) * BLOCKSIZE) {
+				BLOCK[ISIZE + addr[i]].data = data.substr(i * BLOCKSIZE, BLOCKSIZE);
 			}
 			else {
-				//cout << "* " << i << " " << data.substr(i * 512) << endl;
-				BLOCK[ISIZE + addr[i]].data = data.substr(i * 512);
+				BLOCK[ISIZE + addr[i]].data = data.substr(i * BLOCKSIZE);
 				break;
 			}
 		}
-		while (i < 7) {
-			i++;
-			BLOCK[ISIZE + addr[i]].data = "";
+		i++; 
+		for (; i < 8 && addr[i] != -1; i++) {
+			sblock.i_put(addr[i]);
+			addr[i] = -1;
 		}
 	}
 public:
@@ -51,7 +79,6 @@ public:
 	int right; //权限，   
 	int addr[8]; //直接参照
 	dir *pdir;
-
 
 	inode() {
 		size = 0;
@@ -73,6 +100,8 @@ public:
 	string getData() {
 		data = "";
 		for (int i = 0; i < 8; i++) {
+			if (addr[i] == -1)
+				break;
 			data.append(BLOCK[ISIZE + addr[i]].data);
 		}
 		return data;
@@ -82,82 +111,22 @@ public:
 		size = s.length();
 		write();
 	}
+	void printData() {
+		for (int i = 0; i < 8; i++) {
+			if (addr[i] == -1)
+				break;
+			cout << addr[i] << "*" << BLOCK[ISIZE + addr[i]].data << endl;
+		}
+	}
 };
 extern inode INODE[16 * ISIZE];
 
-class filsys {//超级块
-private:
-	int isize;  //inode区总块数
-	int dsize;  //存储区总块数
-	int ifree[100];  //inode空闲队列
-	int dfree[100];  //存储区空闲队列
-	int ninode;  //inode空闲队列长度
-	int ndata;  //存储区空闲队列长度
-	//bool ilock; //inode队列锁
-	//bool dlock; //存储区队列锁
-public:
-	filsys() {
-		isize = ISIZE * 16;
-		dsize = DSIZE;
-		ninode = 0;
-		ndata = 0;
-		//ilock = false;
-		//dlock = false;
-	}
-    void init(){
-        for (int i = 0; i < SIZE; i++) {
-            B_FLAG[i] = false;
-        }
-    }
-	void i_setFree() {
-		for (int i = 1; i < isize; i++) {
-			if (INODE[i].status == 0) {
-				ifree[ninode++] = i;
-				if (ninode == 50)
-					break;
-			}
-		}
-	}
-	void d_setFree() {
-		for (int i = 1; i < dsize; i++) {
-			if (!B_FLAG[ISIZE + i]) {
-				dfree[ndata++] = i;
-				if (ndata == 100)
-					break;
-			}
-		}
-	}
-	int i_get() {
-		if (ninode == 0) {
-			i_setFree();
-			if (ninode == 0) {
-				cerr << "inode区空间不足" << endl;
-				return -1;
-			}
-		}
-		ninode--;
-		int di = ifree[ninode];
-		INODE[di].status = 1;
-		for (int i = 0; i < 8; i++) {
-			INODE[di].addr[i] = d_get();
-		}
-		return di;
-	}
-	int d_get() {
-		if (ndata == 0) {
-			d_setFree();
-			if (ndata == 0) {
-				cerr << "存储区空间不足" << endl;
-				return -1;
-			}
-		}
-		ndata--;
-		int di = dfree[ndata];
-		B_FLAG[di] = true;
-		return di;
-	}
+
+
+class memory {
+	
 };
-extern filsys sblock;
+extern memory mem;
 
 class dir {
 private:
@@ -196,8 +165,7 @@ public:
 	dir* getParent() {
 		return getDir(num[0]);
 	}
-
-	int find(string s) {
+	int find(string s) {//查找文件或者目录，返回在目录表中的下标
 		for (int i = 0; i < nsub; i++) {
 			if (num[i] && name[i] == s) {
 				return i;
@@ -296,6 +264,13 @@ public:
 	void writeFile(string s,string str) {
 		int p = findFile(s);
 		INODE[num[p]].setData(str);
+	}
+
+	inode* getInode(string s) {
+		int p = findFile(s);
+		if (p == -1)
+			return NULL;
+		return &INODE[num[p]];
 	}
 };
 
