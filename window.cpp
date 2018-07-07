@@ -41,13 +41,13 @@ void Window::on_cLB_Login_clicked()
             form->show();
         }
         else if(v==-1){
-            QMessageBox::critical(login,"登陆失败","用户不存在！");
+            QMessageBox::critical(login,u8"登陆失败",u8"用户不存在！");
         }
         else if(v==0){
-            QMessageBox::critical(login,"登陆失败","用户已登录！");
+            QMessageBox::critical(login,u8"登陆失败",u8"用户已登录！");
         }
         else if(v==-2){
-            QMessageBox::critical(login,"登陆失败","密码错误！");
+            QMessageBox::critical(login,u8"登陆失败",u8"密码错误！");
         }
     }
 }
@@ -71,7 +71,7 @@ void Window::on_cLB_adduser_clicked()
             adduser->close();
         }
         else{
-           QMessageBox::critical(adduser,"添加失败","用户名已存在！");
+           QMessageBox::critical(adduser,u8"添加失败",u8"用户名已存在！");
         }
     }
 }
