@@ -2,7 +2,12 @@
 #define WINDOW_H
 
 #include <QWidget>
+<<<<<<< HEAD
 #include <QTableWidget>
+=======
+#include <QMessageBox>
+//#include <bits/stdc++.h>
+>>>>>>> 2a614dc736fe079a74bad4ed1cd002ef458fb2fd
 #include "file.h"
 #include "login.h"
 #include "subform.h"

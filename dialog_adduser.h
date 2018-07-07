@@ -15,6 +15,7 @@ public:
     explicit Dialog_adduser(QWidget *parent = 0);
     ~Dialog_adduser();
     QString getname();
+    QString getpwd();
 private:
     Ui::Dialog_adduser *ui;
 };

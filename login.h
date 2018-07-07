@@ -2,6 +2,7 @@
 #define LOGIN_H
 
 #include <QDialog>
+#include <vector>
 
 namespace Ui {
 class Login;

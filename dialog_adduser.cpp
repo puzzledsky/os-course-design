@@ -12,3 +12,11 @@ Dialog_adduser::~Dialog_adduser()
 {
     delete ui;
 }
+
+QString Dialog_adduser::getname(){
+    return ui->lineEdit_name->text();
+}
+
+QString Dialog_adduser::getpwd(){
+    return ui->lineEdit_pwd->text();
+}
