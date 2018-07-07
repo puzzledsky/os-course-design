@@ -31,6 +31,8 @@ private slots:
 
     void on_cLB_adduser_clicked();
 
+    void on_bt_offwindow_clicked();
+
 private:
     Ui::Window *ui;
     SubForm *form;

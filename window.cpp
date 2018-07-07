@@ -65,3 +65,11 @@ void Window::on_cLB_adduser_clicked()
         }
     }
 }
+
+void Window::on_bt_offwindow_clicked()
+{
+    if(QMessageBox::Yes==QMessageBox::question(this,"exit","确认退出？",
+                                               QMessageBox::Yes | QMessageBox::No,
+                                               QMessageBox::Yes));
+        this->close();
+}
