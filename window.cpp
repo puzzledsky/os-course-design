@@ -14,7 +14,8 @@ Window::Window(QWidget *parent) :
 
     //ui配置
     ui->tableWidget->setRowCount(SIZE/16+1);
-
+    //ui->tableWidget->setStyleSheet("selection-background-color:");
+    ui->tableWidget_3->setRowCount(ISIZE);
 
     test();
     //刷新一次
@@ -78,6 +79,7 @@ void Window::on_cLB_adduser_clicked()
 
 void Window::update(){
     blockPrint();
+    inodePrint();
 }
 
 void Window::setGrid(QTableWidget* widget,int x,int y,QColor c){
@@ -94,12 +96,31 @@ void Window::blockPrint(){
     while (i<ISIZE) {
         if(B_FLAG[i])
             setGrid(w,(i+2)/16,(i+2)%16,Qt::yellow);
+        else
+            setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
         i++;
     }
     while (i<SIZE) {
-        if(B_FLAG[i]){
+        if(B_FLAG[i])
              setGrid(w,(i+2)/16,(i+2)%16,Qt::green);
-        }
+        else
+            setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
+
         i++;
     }
+}
+
+void Window::inodePrint(){
+     QTableWidget *w=ui->tableWidget_3;
+     int i=1;
+     while (i<ISIZE*BLOCKTOI) {
+         if(INODE[i].status==0)
+            setGrid(w,i/16,i%16,Qt::white);
+         else if(INODE[i].type==2)
+            setGrid(w,i/16,i%16,Qt::blue);
+         else if(INODE[i].type==1)
+            setGrid(w,i/16,i%16,Qt::green);
+         i++;
+     }
+
 }
