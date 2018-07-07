@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/shutdown_bt">
+        <file>shutdown_black.ico</file>
+        <file>shutdown_grey.ico</file>
+        <file>shutdown_red.ico</file>
+    </qresource>
+</RCC>
