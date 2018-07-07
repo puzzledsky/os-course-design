@@ -34,6 +34,7 @@ private slots:
     void update();//所有ui的刷新
     void setGrid(QTableWidget* widget,int x,int y,QColor c);
     void blockPrint();
+    void inodePrint();
 private:
     Ui::Window *ui;
     SubForm *form;

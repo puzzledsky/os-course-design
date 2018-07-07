@@ -1,15 +1,15 @@
-#include"file.h"
-/*ȫ�ֱ���*/
+﻿#include"file.h"
+/*全局变量*/
 
-bool B_FLAG[SIZE];//���̿��Ƿ�ʹ��
-block BLOCK[SIZE];//���̿�
-inode INODE[BLOCKTOI * ISIZE];//������INODE����
-filsys sblock;//�����飬����inode�����ݿ�ķ������
-vector<user> USER;//���������û���Ϣ
-dir* ROOT;//��Ŀ¼
-dir* HOME;// Root\Home\�û�Ŀ¼
+bool B_FLAG[SIZE];//磁盘块是否被使用
+block BLOCK[SIZE];//磁盘块
+inode INODE[BLOCKTOI * ISIZE];//磁盘中INODE区域
+filsys sblock;//超级块，负责inode和数据块的分配回收
+vector<user> USER;//保存所有用户信息
+dir* ROOT;//根目录
+dir* HOME;// Root\Home\用户目录
 
-/*filsys����*/
+/*filsys定义*/
 filsys::filsys() {
 	isize = ISIZE * BLOCKTOI;
 	dsize = DSIZE;
@@ -51,7 +51,7 @@ int filsys::i_get() {
 	if (ninode == 0) {
 		i_setFree();
 		if (ninode == 0) {
-			cerr << "inode���ռ䲻��" << endl;
+			cerr << "inode区空间不足" << endl;
 			return -1;
 		}
 	}
@@ -69,7 +69,7 @@ int filsys::d_get() {
 	if (ndata == 0) {
 		d_setFree();
 		if (ndata == 0) {
-			cerr << "�洢���ռ䲻��" << endl;
+			cerr << "存储区空间不足" << endl;
 			return -1;
 		}
 	}

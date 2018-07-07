@@ -13,6 +13,7 @@ const int ISIZE = 10;//保存inode的块数
 const int DSIZE = 200;//保存数据的块数
 const int BLOCKSIZE = 8;//一块的字节大小
 const int BLOCKTOI = 2;//一块保存inode数量
+
 /*
 文件权限问题
 内存问题
@@ -108,7 +109,7 @@ public:
 		for (int i = 0; i < 8; i++) {
 			if (addr[i] == -1)
 				break;
-			data.append(BLOCK[ISIZE + addr[i]].data);
+			data.append(BLOCK[addr[i]].data);
 		}
 		return data;
 	}
