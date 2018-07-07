@@ -19,7 +19,6 @@ Window::Window(QWidget *parent) :
 
     test();
     //刷新一次
-    update();
 }
 
 Window::~Window()
@@ -82,6 +81,10 @@ void Window::update(){
     inodePrint();
 }
 
+void Window::logInfo(QString s){
+   cout<<" "<<s.toStdString()<<endl;
+}
+
 void Window::setGrid(QTableWidget* widget,int x,int y,QColor c){
     QTableWidgetItem *item=new QTableWidgetItem("");
     item->setBackgroundColor(c);
@@ -123,4 +126,13 @@ void Window::inodePrint(){
          i++;
      }
 
+}
+
+void Window::on_tableWidget_cellClicked(int row, int column)
+{
+    cout<<row<<" "<<column<<endl;
+    int num=16*row+column;
+    num-=2;
+    cout<<num<<endl;
+    logInfo(QString::fromStdString(BLOCK[num].data));
 }
