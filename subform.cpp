@@ -30,7 +30,7 @@ void SubForm::setName(QString string)
 
 SubForm::~SubForm()
 {
-    Users::loginOut(name);
+    Users::loginOut(name.toStdString());
     delete ui;
 }
 
