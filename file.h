@@ -7,9 +7,10 @@
 #include<fstream>
 using namespace std;
 const int SIZE = 210;
-const int ISIZE = 10;
+const int ISIZE = 5;
 const int DSIZE = 200;
 const int BLOCKSIZE = 8;
+const int BLOCKTOI = 2;
 /*
 用户问题
 文件权限问题
@@ -53,22 +54,26 @@ class inode {
 private:
 	string data;
 	void write() {
+		if (data.length() > 8 * BLOCKSIZE) {
+			cerr << "存储空间不足" << endl;
+			return;
+		}
 		int i = 0;
 		for (; i < 8; i++) {
 			if (addr[i] == -1) {
 				addr[i] = sblock.d_get();
 			}
 			if (data.length() >(i + 1) * BLOCKSIZE) {
-				BLOCK[ISIZE + addr[i]].data = data.substr(i * BLOCKSIZE, BLOCKSIZE);
+				BLOCK[addr[i]].data = data.substr(i * BLOCKSIZE, BLOCKSIZE);
 			}
 			else {
-				BLOCK[ISIZE + addr[i]].data = data.substr(i * BLOCKSIZE);
+				BLOCK[addr[i]].data = data.substr(i * BLOCKSIZE);
 				break;
 			}
 		}
 		i++; 
 		for (; i < 8 && addr[i] != -1; i++) {
-			sblock.i_put(addr[i]);
+			sblock.d_put(addr[i]);
 			addr[i] = -1;
 		}
 	}
@@ -119,7 +124,7 @@ public:
 		}
 	}
 };
-extern inode INODE[16 * ISIZE];
+extern inode INODE[BLOCKTOI * ISIZE];
 
 
 
@@ -274,4 +279,37 @@ public:
 	}
 };
 
+class print {
+public:
+	static void block() {
+		cout << "block" << endl;
+		for (int i = 0; i < SIZE; i++) {
+			if (i == ISIZE+1) {
+				cout << endl;
+			}
+			if (B_FLAG[i]) {
+				cout << i << "  --  ";
+				cout << BLOCK[i].data << endl;
+			}
+		}
+		cout << endl;
+	}
+	static void inode() {
+		cout << "inode:" << endl;
+		for (int i = 0; i < ISIZE * BLOCKTOI; i++) {
+			if(INODE[i].status){
+				cout << i << endl;
+				for (int j = 0; j < 8; j++)
+					if (INODE[i].addr[j] != -1)
+						cout <<"    addr "<<j<<" : "<< INODE[i].addr[j] << " ";
+				cout << endl;
+			}
+		}
+	}
+	static void all() {
+		block();
+		inode();
+		cout << "------------------" << endl;
+	}
+};
 #endif
