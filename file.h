@@ -330,6 +330,7 @@ public:
 
 		HOME->addDir(*d);
 		USER.push_back(*p);
+        return true;
 	}
 	static int loginIn(string n, string pas) {
 		int x = findUser(n);

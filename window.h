@@ -2,6 +2,12 @@
 #define WINDOW_H
 
 #include <QWidget>
+<<<<<<< HEAD
+#include <QTableWidget>
+=======
+#include <QMessageBox>
+//#include <bits/stdc++.h>
+>>>>>>> 2a614dc736fe079a74bad4ed1cd002ef458fb2fd
 #include "file.h"
 #include "login.h"
 #include "subform.h"
@@ -29,6 +35,9 @@ private slots:
 
     void on_cLB_adduser_clicked();
 
+    void update();//所有ui的刷新
+    void setGrid(QTableWidget* widget,int x,int y,QColor c);
+    void blockPrint();
 private:
     Ui::Window *ui;
     SubForm *form;

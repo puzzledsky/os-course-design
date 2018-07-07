@@ -18,5 +18,5 @@ QString Login::getpwd(){
 }
 
 QString Login::getname(){
-    return ui->comboBox_name->currentText();
+    return ui->lineEdit_name->text();
 }
