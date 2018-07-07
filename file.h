@@ -5,20 +5,23 @@
 #include<string>
 #include<iostream>
 #include<fstream>
+#include<vector>
+
 using namespace std;
-const int SIZE = 210;
-const int ISIZE = 5;
-const int DSIZE = 200;
-const int BLOCKSIZE = 8;
-const int BLOCKTOI = 2;
+const int SIZE = 210;//总块数
+const int ISIZE = 10;//保存inode的块数
+const int DSIZE = 200;//保存数据的块数
+const int BLOCKSIZE = 8;//一块的字节大小
+const int BLOCKTOI = 2;//一块保存inode数量
 /*
-用户问题
 文件权限问题
-删除目录没删子目录和对象
+内存问题
+目录文件的保存 inode的保存
 */
 
 class dir;
 class inode;
+class user;
 
 class block {
 public:
@@ -29,8 +32,8 @@ extern block BLOCK[SIZE];
 
 class filsys {//超级块
 private:
-	static const int IFULL = 50;
-	static const int DFULL = 100;
+	static const int IFULL = 10;
+	static const int DFULL = 30;
 
 	int isize;  //inode区总块数
 	int dsize;  //存储区总块数
@@ -99,9 +102,6 @@ public:
 		data = "";
 		write();
 	}
-	void reset() {
-
-	}
 	string getData() {
 		data = "";
 		for (int i = 0; i < 8; i++) {
@@ -123,6 +123,7 @@ public:
 			cout << addr[i] << "*" << BLOCK[ISIZE + addr[i]].data << endl;
 		}
 	}
+
 };
 extern inode INODE[BLOCKTOI * ISIZE];
 
@@ -153,6 +154,13 @@ private:
 			nsub++;
 		return p;
 	}
+	static dir* getDir(int n) {
+		return INODE[n].pdir;
+	}
+	dir* getParent() {
+		return getDir(num[0]);
+	}
+	
 public:
 	dir(string s) {
 		nsub = 2;
@@ -163,12 +171,6 @@ public:
 		num[1] = di;
 		INODE[di].pdir = this;
 		INODE[di].type = 2;
-	}
-	static dir* getDir(int n) {
-		return INODE[n].pdir;
-	}
-	dir* getParent() {
-		return getDir(num[0]);
 	}
 	int find(string s) {//查找文件或者目录，返回在目录表中的下标
 		for (int i = 0; i < nsub; i++) {
@@ -185,14 +187,24 @@ public:
 		x.num[0] = num[1];
 		x.name[0] = name[1];
 	}
-	bool removeDir(string s) {//还有子目录的问题
-		int x = find(s);
-		if (x != -1 && INODE[x].type==1) {
-			num[x] = 0;
-			return true;
+	void remove() {
+		for (int i = 2; i < nsub; i++) {
+			if (INODE[num[i]].type == 1) {
+				sblock.i_put(num[i]);
+			}
+			else if (INODE[num[i]].type == 2) {
+				getDir(num[i])->remove();
+			}
 		}
-		return false;
+		if (num[0] != 0) {
+			dir *p = getParent();
+			int x = p->find(name[1]);
+			p->num[x] = 0;
+		}
+		sblock.i_put(num[1]);
+		this->~dir();
 	}
+
 	bool rename(string s) {
 		if (s == name[1])
 			return true;
@@ -251,7 +263,7 @@ public:
 		int p = findFile(s);
 		if (p == -1)
 			return false;
-		INODE[num[p]].reset();
+		sblock.i_put(num[p]);
 		num[p] = 0;
 		return true;
 	}
@@ -271,12 +283,77 @@ public:
 		INODE[num[p]].setData(str);
 	}
 
-	inode* getInode(string s) {
-		int p = findFile(s);
-		if (p == -1)
-			return NULL;
-		return &INODE[num[p]];
+	//inode* getInode(string s) {
+	//	int p = findFile(s);
+	//	if (p == -1)
+	//		return NULL;
+	//	return &INODE[num[p]];
+	//}
+};
+
+class user {
+public:
+	string name;
+	string password;
+	dir* pdir;
+	int status; // 0:离线 1:在线
+};
+extern vector<user> USER;
+extern dir* ROOT;
+extern dir* HOME;
+
+/*
+Users::addUser("1", "abc");
+Users::loginIn("1", "abc");
+Users::loginOut("1");
+*/
+class Users{
+public:
+	static int findUser(string n) {
+		for (int i = 0; i < USER.size(); i++) {
+			if (USER[i].name == n)
+				return i;
+		}
+		return -1;
 	}
+	static bool addUser(string n,string pas) {
+		if (findUser(n) != -1) {
+			cerr << "用户名冲突" << endl;
+			return false;
+		}
+		user *p = new user;
+		dir *d = new dir(n);
+		p->name = n;
+		p->password = pas;
+		p->status = 0;
+
+		HOME->addDir(*d);
+		USER.push_back(*p);
+	}
+	static int loginIn(string n, string pas) {
+		int x = findUser(n);
+		if (x == -1) {
+			cerr << "用户不存在" << endl;
+			return -1;
+		}
+		else if (USER[x].status == 1) {
+			cerr << "用户已登录" << endl;
+			return 0;
+		}
+		else if (USER[x].password != pas) {
+			cerr << "密码错误" << endl;
+			return -2;
+		}
+		else {//成功
+			USER[x].status = 1;
+			return 1; 
+		}
+	}
+	static void loginOut(string n){
+		int x = findUser(n);
+		USER[x].status = 0;
+	}
+	static bool removeUser(string n);
 };
 
 class print {
@@ -284,7 +361,7 @@ public:
 	static void block() {
 		cout << "block" << endl;
 		for (int i = 0; i < SIZE; i++) {
-			if (i == ISIZE+1) {
+			if (i == ISIZE + 1) {
 				cout << endl;
 			}
 			if (B_FLAG[i]) {
@@ -297,11 +374,11 @@ public:
 	static void inode() {
 		cout << "inode:" << endl;
 		for (int i = 0; i < ISIZE * BLOCKTOI; i++) {
-			if(INODE[i].status){
+			if (INODE[i].status) {
 				cout << i << endl;
 				for (int j = 0; j < 8; j++)
 					if (INODE[i].addr[j] != -1)
-						cout <<"    addr "<<j<<" : "<< INODE[i].addr[j] << " ";
+						cout << "    addr " << j << " : " << INODE[i].addr[j] << " ";
 				cout << endl;
 			}
 		}
@@ -310,6 +387,12 @@ public:
 		block();
 		inode();
 		cout << "------------------" << endl;
+	}
+	static void users() {
+		cout << "user:" << endl;
+		for (int i = 0; i < USER.size(); i++) {
+			cout << USER[i].name << "  " << USER[i].status << endl;
+		}
 	}
 };
 #endif
