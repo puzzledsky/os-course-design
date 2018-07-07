@@ -1,11 +1,11 @@
 #include"file.h"
 /*全局变量*/
 
-bool B_FLAG[SIZE];
-block BLOCK[SIZE];
-inode INODE[BLOCKTOI * ISIZE];
-filsys sblock;
-vector<user> USER;
+bool B_FLAG[SIZE];//磁盘块是否被使用
+block BLOCK[SIZE];//磁盘块
+inode INODE[BLOCKTOI * ISIZE];//磁盘中INODE区域
+filsys sblock;//超级块，负责inode和数据块的分配回收
+vector<user> USER;//保存所有用户信息
 dir* ROOT;//根目录
 dir* HOME;// Root\Home\用户目录
 
@@ -16,6 +16,9 @@ filsys::filsys() {
 	ninode = 0;
 	ndata = 0;
 
+	if (IFULL > BLOCKTOI * ISIZE) {
+		IFULL = BLOCKTOI * ISIZE / 2;
+	}
 	init();
 }
 void filsys::init() {

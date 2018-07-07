@@ -17,6 +17,7 @@ const int BLOCKTOI = 2;//一块保存inode数量
 文件权限问题
 内存问题
 目录文件的保存 inode的保存
+用户组
 */
 
 class dir;
@@ -32,13 +33,13 @@ extern block BLOCK[SIZE];
 
 class filsys {//超级块
 private:
-	static const int IFULL = 10;
-	static const int DFULL = 30;
+	int IFULL = 100;
+	int DFULL = 100;
 
 	int isize;  //inode区总块数
 	int dsize;  //存储区总块数
-	int ifree[IFULL];  //inode空闲队列
-	int dfree[DFULL];  //存储区空闲队列
+	int ifree[100];  //inode空闲队列
+	int dfree[100];  //存储区空闲队列
 	int ninode;  //inode空闲队列长度
 	int ndata;  //存储区空闲队列长度
 public:
@@ -160,6 +161,21 @@ private:
 	dir* getParent() {
 		return getDir(num[0]);
 	}
+	int find(string s) {//查找文件或者目录，返回在目录表中的下标
+		for (int i = 0; i < nsub; i++) {
+			if (num[i] && name[i] == s) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	int findFile(string s) {
+		int p = find(s);
+		if (INODE[num[p]].type != 1) {
+			p = -1;
+		}
+		return p;
+	}
 	
 public:
 	dir(string s) {
@@ -172,14 +188,7 @@ public:
 		INODE[di].pdir = this;
 		INODE[di].type = 2;
 	}
-	int find(string s) {//查找文件或者目录，返回在目录表中的下标
-		for (int i = 0; i < nsub; i++) {
-			if (num[i] && name[i] == s) {
-				return i;
-			}
-		}
-		return -1;
-	}
+	
 	void addDir(dir& x) {//命名冲突？
 		int p = getFree();
 		name[p] = x.name[1];
@@ -187,7 +196,7 @@ public:
 		x.num[0] = num[1];
 		x.name[0] = name[1];
 	}
-	void remove() {
+	void remove() {//删除目录自己，包括子目录和文件
 		for (int i = 2; i < nsub; i++) {
 			if (INODE[num[i]].type == 1) {
 				sblock.i_put(num[i]);
@@ -204,8 +213,7 @@ public:
 		sblock.i_put(num[1]);
 		this->~dir();
 	}
-
-	bool rename(string s) {
+	bool rename(string s) {//目录重命名
 		if (s == name[1])
 			return true;
 		dir* p = getParent();
@@ -223,33 +231,32 @@ public:
 		}
 		return false;
 	}
-	void print() {
+	void print() {//输出目录表
 		for (int i = 0; i < nsub; i++) {
-			//if(num[i]||i<2)
 			cout << name[i] << "  " << num[i] << endl;
 		}
 		cout << endl;
 	}
-	dir* in(string s) {
+	dir* in(string s) {//进入子目录，失败时留在当前目录
 		int p = find(s);
 		if (p != -1 && INODE[num[p]].type == 2)
 			return INODE[num[p]].pdir;
 		return this;
 	}
-	dir* out() {
+	dir* out() {//返回上一级目录，失败时留在当前目录
 		if (num[0] == 0)
 			return this;
 		return INODE[num[0]].pdir;
 	}
 	
-	int findFile(string s) {
-		int p = find(s);
-		if (INODE[num[p]].type != 1) {
-			p = -1;
-		}
-		return p;
+
+	inode* getFile(string s) {//在当前目录查找指定文件，返回inode，失败时返回NULL
+		int p = findFile(s);
+		if (p == -1)
+			return NULL;
+		return &INODE[p];
 	}
-	bool addFile(string s) {
+	bool addFile(string s) {//s：文件名，添加文件
 		if (find(s) != -1)// 命名冲突
 			return false;
 		int di = sblock.i_get();
@@ -259,7 +266,7 @@ public:
 		num[p] = di;
 		return true;
 	}
-	bool removeFile(string s) {
+	bool removeFile(string s) {//s：文件名，删除文件
 		int p = findFile(s);
 		if (p == -1)
 			return false;
@@ -267,28 +274,21 @@ public:
 		num[p] = 0;
 		return true;
 	}
-	bool renameFile(string s,string name1) {
+	bool renameFile(string s,string name1) {//s:文件名，name1：新文件名， 文件重命名
 		int p = findFile(s);
 		int p1 = find(name1);
 		if (p1 != -1)
 			return false;
 		name[p] = name1;
 	}
-	string readFile(string s) {
+	string readFile(string s) {//  返回文件全部内容
 		int p = findFile(s);
 		return INODE[num[p]].getData();
 	}
-	void writeFile(string s,string str) {
+	void writeFile(string s,string str) {//s：文件名，str：新的内容（全部） 重写文件 
 		int p = findFile(s);
 		INODE[num[p]].setData(str);
 	}
-
-	//inode* getInode(string s) {
-	//	int p = findFile(s);
-	//	if (p == -1)
-	//		return NULL;
-	//	return &INODE[num[p]];
-	//}
 };
 
 class user {
