@@ -1,11 +1,13 @@
 #include"file.h"
 /*全局变量*/
 
-bool B_FLAG[SIZE];
-block BLOCK[SIZE];
-inode INODE[BLOCKTOI * ISIZE];
-filsys sblock;
-
+bool B_FLAG[SIZE];//磁盘块是否被使用
+block BLOCK[SIZE];//磁盘块
+inode INODE[BLOCKTOI * ISIZE];//磁盘中INODE区域
+filsys sblock;//超级块，负责inode和数据块的分配回收
+vector<user> USER;//保存所有用户信息
+dir* ROOT;//根目录
+dir* HOME;// Root\Home\用户目录
 
 /*filsys定义*/
 filsys::filsys() {
@@ -13,13 +15,19 @@ filsys::filsys() {
 	dsize = DSIZE;
 	ninode = 0;
 	ndata = 0;
-	//ilock = false;
-	//dlock = false;
+
+	if (IFULL > BLOCKTOI * ISIZE) {
+		IFULL = BLOCKTOI * ISIZE / 2;
+	}
+	init();
 }
 void filsys::init() {
 	for (int i = 0; i < SIZE; i++) {
 		B_FLAG[i] = false;
 	}
+	ROOT = new dir("root");
+	HOME = new dir("home");
+	ROOT->addDir(*HOME);
 }
 void filsys::i_setFree() {
 	for (int i = 1; i < isize; i++) {
@@ -77,7 +85,10 @@ int filsys::i_put(int di) {
 	}
 	INODE[di].status = 0;
 	for (int i = 0; i < 8; i++) {
-		INODE[di].addr[i] = -1;
+		if (INODE[di].addr[i] != -1) {
+			d_put(INODE[di].addr[i]);
+			INODE[di].addr[i] = -1;
+		}
 	}
 
 	bool empty = true;
