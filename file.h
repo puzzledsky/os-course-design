@@ -48,9 +48,20 @@ public:
 			num[i] = 0;
 	}
 	void push(int x) {
-		int p=-1;
+		int p = -1;
 		for (int i = 0; i < MSIZE; i++) {
-			
+			if (num[i] == 0) {
+				p = i;
+				break;
+			}
+		}
+		if (p == -1) {
+			for (int i = 0; i < MSIZE; i++) {
+				if (flag[i] == 0) {
+					p = i;
+					break;
+				}
+			}
 		}
 	}
 	void pop(int x);
