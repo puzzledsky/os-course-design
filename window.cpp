@@ -16,9 +16,20 @@ Window::Window(QWidget *parent) :
     ui->tableWidget->setRowCount(SIZE/16+1);
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
+    ui->lt_users->horizontalHeader()->setStretchLastSection(true);
+    ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
-    //刷新一次
+
+
+
+
+    //刷新
+    timer.setInterval(500);
+    connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
+    if(!timer.isActive())
+        timer.start();
+    qDebug()<<"主界面构造完毕";
 }
 
 Window::~Window()
@@ -77,8 +88,18 @@ void Window::on_cLB_adduser_clicked()
     }
 }
 
+void Window::on_bt_offwindow_clicked()
+{
+    if(QMessageBox::Yes==QMessageBox::question(this,"exit","确认退出？",
+                                               QMessageBox::Yes | QMessageBox::No,
+                                               QMessageBox::Yes));
+        this->close();
+}
+
 void Window::update(){
+    //qDebug()<<"update";
     blockPrint();
+    initUserList();
     inodePrint();
 }
 
@@ -111,6 +132,21 @@ void Window::blockPrint(){
             setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
 
         i++;
+    }
+
+}
+
+void Window::initUserList(){
+    int row=ui->lt_users->rowCount();
+    for(int i=row;i>=0;i--){
+        ui->lt_users->removeRow(i);
+        qDebug()<<i;
+    }
+    for(int i=0;i<USER.size();i++){
+        qDebug()<<"inituserlist"<<i;
+        ui->lt_users->insertRow(i+1);
+        ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
+        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status));
     }
 }
 
