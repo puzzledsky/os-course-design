@@ -14,7 +14,7 @@ const int ISIZE = 10;//保存inode的块数
 const int DSIZE = 300;//保存数据的块数
 const int MSIZE = 200;
 const int BLOCKSIZE = 8;//一块的字节大小
-const int BLOCKTOI = 2;//一块保存inode数量
+const int BLOCKTOI = 16;//一块保存inode数量
 
 /*
 文件权限问题 用户组
@@ -201,10 +201,6 @@ extern inode INODE[BLOCKTOI * ISIZE];
 
 class dir {
 private:
-	int num[100];
-	string name[100];
-	int nsub;
-
     //获得空闲节点
 	int getFree() {
 		if (nsub == 100)
@@ -241,6 +237,10 @@ private:
 	}
    
 public:
+	int num[100];
+	string name[100];
+	int nsub;
+
 	dir(string s) {
 		nsub = 2;
 		name[0] = "NULL";

@@ -115,7 +115,7 @@ void Window::update(){
 }
 
 void Window::logInfo(QString s){
-   cout<<" "<<s.toStdString()<<endl;
+    ui->Logs->setText(s);
 }
 
 void Window::setGrid(QTableWidget* widget,int x,int y,QColor c){
@@ -192,7 +192,35 @@ void Window::on_tableWidget_cellClicked(int row, int column)
 {
     cout<<row<<" "<<column<<endl;
     int num=16*row+column;
-    num-=2;
-    cout<<num<<endl;
+    QString s=u8"";
+    if(num==0){
+        s.append(u8"系统引导块\n");
+        logInfo(s);
+        return;
+    }
+    else if(num==1){
+        s.append(u8"超级块\n");
+        logInfo(s);
+        return;
+    }
+    num-=1;
+    int temp;
+    if(num<ISIZE){
+        s.append(u8"inode范围:");
+        temp=16*(num-1)+1;
+        s.append(QString(temp));
+        s.append(u8" - ");
+        s.append(16*(num-1)+15);
+        s.append("\n已使用inode信息:\n");
+        for(int i=1;i<=BLOCKTOI;i++){
+            int x=16*(num-1)+i;
+            if(INODE[x].status==1){
+                s.append(i);
+                s.append(u8"\n");
+            }
+        }
+        logInfo(s);
+        return;
+    }
     logInfo(QString::fromStdString(BLOCK[num].data));
 }
