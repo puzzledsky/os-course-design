@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>913</width>
-    <height>675</height>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QTableWidget" name="lt_users">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>160</x>
      <y>30</y>
      <width>211</width>
      <height>231</height>
@@ -35,7 +35,7 @@
     <number>1</number>
    </property>
    <attribute name="horizontalHeaderVisible">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <attribute name="horizontalHeaderMinimumSectionSize">
     <number>9</number>
@@ -87,8 +87,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>290</y>
+     <x>510</x>
+     <y>50</y>
      <width>54</width>
      <height>12</height>
     </rect>
@@ -100,8 +100,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>290</y>
+     <x>570</x>
+     <y>50</y>
      <width>54</width>
      <height>12</height>
     </rect>
@@ -113,8 +113,8 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>290</y>
+     <x>620</x>
+     <y>50</y>
      <width>71</width>
      <height>16</height>
     </rect>
@@ -126,8 +126,8 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>290</y>
+     <x>700</x>
+     <y>50</y>
      <width>54</width>
      <height>12</height>
     </rect>
@@ -139,8 +139,8 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>290</y>
+     <x>750</x>
+     <y>50</y>
      <width>54</width>
      <height>12</height>
     </rect>
@@ -152,8 +152,8 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>270</y>
+     <x>520</x>
+     <y>30</y>
      <width>10</width>
      <height>10</height>
     </rect>
@@ -171,8 +171,8 @@
   <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>330</y>
+     <x>470</x>
+     <y>80</y>
      <width>344</width>
      <height>191</height>
     </rect>
@@ -254,8 +254,8 @@
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>270</y>
+     <x>580</x>
+     <y>30</y>
      <width>10</width>
      <height>10</height>
     </rect>
@@ -273,8 +273,8 @@
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>270</y>
+     <x>650</x>
+     <y>30</y>
      <width>10</width>
      <height>10</height>
     </rect>
@@ -292,8 +292,8 @@
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>270</y>
+     <x>710</x>
+     <y>30</y>
      <width>10</width>
      <height>10</height>
     </rect>
@@ -311,8 +311,8 @@
   <widget class="QLabel" name="label_10">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>270</y>
+     <x>760</x>
+     <y>30</y>
      <width>10</width>
      <height>10</height>
     </rect>
@@ -330,8 +330,8 @@
   <widget class="QTableWidget" name="tableWidget_2">
    <property name="geometry">
     <rect>
-     <x>570</x>
-     <y>330</y>
+     <x>450</x>
+     <y>350</y>
      <width>203</width>
      <height>191</height>
     </rect>
@@ -413,32 +413,6 @@
    <column/>
    <column/>
   </widget>
-  <widget class="QLabel" name="label_11">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>300</y>
-     <width>151</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>内存inode号分配情况</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_12">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>50</y>
-     <width>151</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>外存inode号分配情况</string>
-   </property>
-  </widget>
   <widget class="QCommandLinkButton" name="cLB_openCatalog">
    <property name="geometry">
     <rect>
@@ -452,139 +426,11 @@
     <string>目录查看</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_15">
-   <property name="geometry">
-    <rect>
-     <x>680</x>
-     <y>300</y>
-     <width>54</width>
-     <height>12</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>已分配：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_16">
-   <property name="geometry">
-    <rect>
-     <x>750</x>
-     <y>300</y>
-     <width>54</width>
-     <height>12</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>未分配：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_17">
-   <property name="geometry">
-    <rect>
-     <x>730</x>
-     <y>300</y>
-     <width>10</width>
-     <height>10</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(99, 195, 255);</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_18">
-   <property name="geometry">
-    <rect>
-     <x>800</x>
-     <y>300</y>
-     <width>10</width>
-     <height>10</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(166, 166, 166);</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_19">
-   <property name="geometry">
-    <rect>
-     <x>680</x>
-     <y>50</y>
-     <width>54</width>
-     <height>12</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>已分配：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_20">
-   <property name="geometry">
-    <rect>
-     <x>800</x>
-     <y>50</y>
-     <width>10</width>
-     <height>10</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(166, 166, 166);</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_21">
-   <property name="geometry">
-    <rect>
-     <x>750</x>
-     <y>50</y>
-     <width>54</width>
-     <height>12</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>未分配：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_22">
-   <property name="geometry">
-    <rect>
-     <x>730</x>
-     <y>50</y>
-     <width>10</width>
-     <height>10</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(170, 85, 255);</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QTableWidget" name="tableWidget_3">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>100</y>
+     <x>50</x>
+     <y>360</y>
      <width>311</width>
      <height>181</height>
     </rect>
@@ -771,6 +617,185 @@
     <string/>
    </property>
   </widget>
+  <widget class="QTextEdit" name="Logs">
+   <property name="geometry">
+    <rect>
+     <x>720</x>
+     <y>350</y>
+     <width>151</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="font">
+    <font>
+     <family>黑体</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>320</y>
+     <width>321</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>外存inode号分配情况</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_19">
+      <property name="text">
+       <string>已分配：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_22">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(170, 85, 255);</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_21">
+      <property name="text">
+       <string>未分配：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_20">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(166, 166, 166);</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>320</y>
+     <width>321</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>内存inode号分配情况</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>已分配：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_17">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(99, 195, 255);</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_16">
+      <property name="text">
+       <string>未分配：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_18">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(166, 166, 166);</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <zorder>lt_users</zorder>
+  <zorder>label</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label_3</zorder>
+  <zorder>label_4</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_6</zorder>
+  <zorder>tableWidget</zorder>
+  <zorder>label_7</zorder>
+  <zorder>label_8</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>tableWidget_2</zorder>
+  <zorder>label_11</zorder>
+  <zorder>label_12</zorder>
+  <zorder>cLB_openCatalog</zorder>
+  <zorder>label_15</zorder>
+  <zorder>label_16</zorder>
+  <zorder>label_17</zorder>
+  <zorder>label_18</zorder>
+  <zorder>label_19</zorder>
+  <zorder>label_20</zorder>
+  <zorder>label_21</zorder>
+  <zorder>label_22</zorder>
+  <zorder>tableWidget_3</zorder>
+  <zorder>cLB_Login</zorder>
+  <zorder>cLB_adduser</zorder>
+  <zorder>bt_offwindow</zorder>
+  <zorder>Logs</zorder>
+  <zorder>label_16</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
