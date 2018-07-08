@@ -12,7 +12,7 @@ class Dialog_adduser : public QDialog
     Q_OBJECT
 
 public:
-    explicit Dialog_adduser(QWidget *parent = 0);
+    explicit Dialog_adduser(QWidget *parent,QString name,QString pwd);
     ~Dialog_adduser();
     QString getname();
     QString getpwd();

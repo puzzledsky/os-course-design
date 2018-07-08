@@ -48,4 +48,5 @@ FORMS += \
     widget_catalog.ui
 
 RESOURCES += \
-    button.qrc
+    button.qrc \
+    friendlyui.qrc

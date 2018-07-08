@@ -20,6 +20,7 @@ Window::Window(QWidget *parent) :
     ui->lt_users->horizontalHeader()->setStretchLastSection(true);
     ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
     ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
@@ -49,27 +50,47 @@ Window::~Window()
 
 void Window::on_cLB_Login_clicked()
 {
-    login = new Login(this);
 
-    if(login->exec()==QDialog::Accepted){
-        QString qname=login->getname();
-        QString qpwd=login->getpwd();
-        string name=qname.toStdString();
-        string pwd=qpwd.toStdString();
-        int v=Users::loginIn(name,pwd);
-        if(v==1){
-            form=new SubForm(this,QString::fromStdString(name));
-            form->show();
-            form->setName(QString::fromStdString(name));
-        }
-        else if(v==-1){
-            QMessageBox::critical(login,u8"登陆失败",u8"用户不存在！");
-        }
-        else if(v==0){
-            QMessageBox::critical(login,u8"登陆失败",u8"用户已登录！");
-        }
-        else if(v==-2){
-            QMessageBox::critical(login,u8"登陆失败",u8"密码错误！");
+    QString qname="";
+    QString qpwd="";
+    bool success=false;
+    while (!success) {
+        login = new Login(this,qname,qpwd);
+        if(login->exec()==QDialog::Accepted){
+            qname=login->getname();
+            qpwd=login->getpwd();
+            string name=qname.toStdString();
+            string pwd=qpwd.toStdString();
+            if(name==""){
+                QMessageBox::critical(login,u8"登陆失败",u8"用户名不能为空！");
+                continue;
+            }
+            if(pwd==""){
+                QMessageBox::critical(login,u8"登陆失败",u8"密码不能为空！");
+                continue;
+            }
+            int v=Users::loginIn(name,pwd);
+            if(v==1){
+                form=new SubForm(this,QString::fromStdString(name));
+                form->show();
+                form->setName(QString::fromStdString(name));
+                success=true;
+            }
+            else if(v==-1){
+                QMessageBox::critical(login,u8"登陆失败",u8"用户不存在！");
+                name="";
+            }
+            else if(v==0){
+                QMessageBox::critical(login,u8"登陆失败",u8"用户已登录！");
+                name="";
+                pwd="";
+            }
+            else if(v==-2){
+                QMessageBox::critical(login,u8"登陆失败",u8"密码错误！");
+                pwd="";
+            }
+        }else{
+            break;
         }
     }
 }
@@ -82,29 +103,46 @@ void Window::on_cLB_openCatalog_clicked()
 
 void Window::on_cLB_adduser_clicked()
 {
-    adduser=new Dialog_adduser(this);
-    if(adduser->exec()==QDialog::Accepted){
-        QString qname=adduser->getname();
-        QString qpwd=adduser->getpwd();
-        string name=qname.toStdString();
-        string pwd=qpwd.toStdString();
-        int v=Users::addUser(name,pwd);
-        if(v==true){
-            adduser->close();
+    bool finish=false;
+    QString qname="";
+    QString qpwd="";
+    while(!finish){
+        adduser=new Dialog_adduser(this,qname,qpwd);
+        if(adduser->exec()==QDialog::Accepted){
+            qname=adduser->getname();
+            qpwd=adduser->getpwd();
+            string name=qname.toStdString();
+            string pwd=qpwd.toStdString();
+            if(name==""){
+                QMessageBox::critical(adduser,u8"添加失败",u8"用户名不能为空！");
+                continue;
+            }
+            if(pwd==""){
+                QMessageBox::critical(adduser,u8"添加失败",u8"密码不能为空！");
+                continue;
+            }
+            int v=Users::addUser(name,pwd);
+            if(v==true){
+                finish=true;
+            }
+            else{
+               QMessageBox::critical(adduser,u8"添加失败",u8"用户名已存在！");
+               qname="";
+            }
         }
         else{
-           QMessageBox::critical(adduser,u8"添加失败",u8"用户名已存在！");
+            finish=true;
         }
     }
 }
 
-void Window::on_bt_offwindow_clicked()
-{
-    if(QMessageBox::Yes==QMessageBox::question(this,"exit","确认退出？",
-                                               QMessageBox::Yes | QMessageBox::No,
-                                               QMessageBox::Yes));
-        this->close();
-}
+//void Window::on_bt_offwindow_clicked()
+//{
+//    if(QMessageBox::Yes==QMessageBox::question(this,"exit","确认退出？",
+//                                               QMessageBox::Yes | QMessageBox::No,
+//                                               QMessageBox::Yes));
+//        this->close();
+//}
 
 void Window::update(){
     //qDebug()<<"update";
@@ -152,6 +190,7 @@ void Window::initUserList(){
     ui->lt_users->setRowCount(USER.size());
     ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
     for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
         ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?"已登录":"未登录"));

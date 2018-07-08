@@ -34,7 +34,7 @@ private slots:
 
     void on_cLB_adduser_clicked();
 
-    void on_bt_offwindow_clicked();
+    //void on_bt_offwindow_clicked();
 
     void update();//所有ui的刷新
 
@@ -42,12 +42,12 @@ private slots:
 
     void blockPrint();
 
-
     void initUserList();
 
-
     void inodePrint();
+
     void on_tableWidget_cellClicked(int row, int column);
+
     void logInfo(QString s); //信息显示，暂时是控制台输出
 
 private:

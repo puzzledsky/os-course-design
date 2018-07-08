@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/welcome">
+        <file>chichen-welcome.png</file>
+        <file>561362.png</file>
+        <file>561363.png</file>
+        <file>561364.png</file>
+        <file>561365.png</file>
+        <file>561366.png</file>
+        <file>561367.png</file>
+        <file>561368.png</file>
+        <file>1098479.png</file>
+        <file>1098481.png</file>
+        <file>1098482.png</file>
+        <file>1098483.png</file>
+        <file>1098485.png</file>
+        <file>1114118.png</file>
+        <file>grass_1.ico</file>
+    </qresource>
+</RCC>
