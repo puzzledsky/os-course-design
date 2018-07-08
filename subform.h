@@ -18,6 +18,7 @@ public:
     explicit SubForm(QWidget *parent = 0,QString string = NULL);
     ~SubForm();
 
+    void closeEvent(QCloseEvent *event);//关闭事件
     void returnReaction();
     void reactionFunction();
     void getFun();
