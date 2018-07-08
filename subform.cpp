@@ -18,8 +18,6 @@ SubForm::SubForm(QWidget *parent, QString string) :
     ui->textEdit->setTextColor(QColor(255,0,255));
     ui->textEdit->append(name + " /" + name + "\n$ ");
     ui->textEdit->setTextColor(QColor(0,0,0));
-
-
 }
 
 void SubForm::setName(QString string)
@@ -44,15 +42,15 @@ void SubForm::returnReaction()
     }
 }
 
+//解析用户输入的命令
 void SubForm::reactionFunction()
 {
     ml = ui->textEdit->toPlainText();
     QStringList mlist = ml.split("\n");
-    ml = mlist[mlist.size()-1];
-    //ml为按下回车前该行的内容
-    getFun();
+    ml = mlist[mlist.size()-1];  //ml为按下回车前该行的内容
 }
 
+//根据用户命令进行不同的动作
 void SubForm::getFun()
 {
     if(ml == "$ "){
@@ -65,14 +63,26 @@ void SubForm::getFun()
             mlings.append(mls[i]);
         }
     }
+    //根据不同的命令进行不同的操作
     if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
         if(mlings.size() == 2){
-            if(mlings[mling] == vi){
-                isEdit = true;
-                ui->textEdit->clear();
-            }else if(mlings.at(mling) == rm){
-
-            }else if(mlings.at(mling) == cat){
+            if(mlings[mling] == vi){//创建新文件
+                QString t = mlings.at(1);
+                if(THIS->addFile(t.toStdString())){
+                    isEdit = true;
+                    ui->textEdit->clear();
+                }else{
+                    outputerror("File already exit!");
+                }
+            }else if(mlings.at(mling) == rm){//删除文件
+                //输入文件名，删除文件
+                QString tt = mlings.at(1);
+                if(THIS->removeFile(tt.toStdString())){
+                    outputerror("File delete success!");
+                }else{
+                    outputerror("File not exit! Delete fail!");
+                }
+            }else if(mlings.at(mling) == cat){//读文件
                 //显示文件内容
                 QString tt = mlings.at(1);
                 string s = THIS->readFile(tt.toStdString());
@@ -85,7 +95,7 @@ void SubForm::getFun()
         }else{
             outputerror("Input error!");
         }
-    }else if(mlings[mling] == ls){
+    }else if(mlings[mling] == ls){//列出目录内容
         if(mlings.size() == 2){
             QString t = mlings[1];
             if(!t.startsWith("/") || t.endsWith("/")){
@@ -111,6 +121,31 @@ void SubForm::getFun()
         }else{
             outputerror("Input error!");
         }
+    }else if(mlings[mling] == mkdir){//创建目录
+        if(mlings.size() == 2){
+            QString t = mlings.at(1);
+            if(THIS->addDir(t.toStdString())){
+                outputerror("add dir success!");
+            }
+            else{
+                outputerror("dir already exit!");
+            }
+        }else{
+            outputerror("input error!");
+        }
+    }else if(mlings[mling] == rmdir){//删除目录
+        QString t = mlings.at(1);
+        if(mlings.size() == 2){
+            dir *p = THIS->in(t.toStdString());
+            if(p != NULL){
+                p->remove();
+                outputerror("delete dir success!");
+            }else{
+                outputerror("dir not exit!");
+            }
+        }else{
+            outputerror("input error!");
+        }
     }else{
         outputerror("Input error!");
     }
@@ -118,8 +153,8 @@ void SubForm::getFun()
 
 void SubForm::outputerror(QString string)
 {
-    ui->textEdit->setTextColor(QColor(255,0,255));
-    ui->textEdit->append(QString::fromStdString("\n" + THIS->getName()) + " /" + QString::fromStdString(THIS->getName()));
+//    ui->textEdit->setTextColor(QColor(255,0,255));
+//    ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()));
     ui->textEdit->setTextColor(QColor(255,0,0));
     ui->textEdit->append(string);
     ui->textEdit->setTextColor(QColor(0,0,0));
@@ -134,6 +169,7 @@ bool SubForm::eventFilter(QObject *obj, QEvent *event)
                 QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
                 if(!isEdit && keyEvent->key() == Qt::Key_Return){
                     reactionFunction();
+                    getFun();
                     returnReaction();
                     return true;
                 }
@@ -163,11 +199,11 @@ void SubForm::storeFile(){
     if(t == "$ :wq"){
         //新建一个文件
         t = mlings.at(1);
-        THIS->addFile(t.toStdString());
+//        THIS->addFile(t.toStdString());
         THIS->writeFile(t.toStdString(),newfile.toStdString());
         outputerror("File store success!");
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append(QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+        ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
         ui->textEdit->setTextColor(QColor(0,0,0));
         isEdit = false;
         endEdit = false;
@@ -176,7 +212,7 @@ void SubForm::storeFile(){
         ui->textEdit->append("illegal!");
         ui->textEdit->setTextColor(QColor(0,0,0));
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append(QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+        ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
 

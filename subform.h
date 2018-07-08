@@ -49,10 +49,10 @@ private:
     QString rmdir = "rmdir";//在当前目录下删除目录，后接目录名
     QString ls = "ls";//列出目录的内容，后接目录名
     QString find = "find";//搜索文件，后接文件名
-    QString rm = "rm";//删除文件，后接文件名
+    QString rm = "rm";//删除文件，后接文件名 rm test.txt
     QString cat = "cat";//显示文件内容，后接文件名 cat test.txt
     QString mv = "mv";//文件更名或移动
-    //文件路径写法/uesr/test/test.txt]
+    //文件路径写法 /uesr/test/test.txt
     QString vi = "vi";//新建一个文本文件，后接文件名，同时进入文本编辑器
     QString wq = ":w q";//将文件写盘并退出vi
 

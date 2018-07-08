@@ -173,6 +173,8 @@ private:
 		}
 		return -1;
 	}
+
+    //根据文件名找文件，没找到则返回-1
 	int findFile(string s) {
 		int p = find(s);
 		if (INODE[num[p]].type != 1) {
@@ -193,6 +195,7 @@ public:
 		INODE[di].type = 2;
 	}
 	
+    //在当前目录下添加目录x
 	void addDir(dir& x) {//命名冲突？
 		int p = getFree();
 		name[p] = x.name[1];
@@ -200,6 +203,7 @@ public:
 		x.num[0] = num[1];
 		x.name[0] = name[1];
 	}
+
 	void remove() {//删除目录自己，包括子目录和文件
 		for (int i = 2; i < nsub; i++) {
 			if (INODE[num[i]].type == 1) {
@@ -253,7 +257,6 @@ public:
 		return INODE[num[0]].pdir;
 	}
 	
-
 	inode* getFile(string s) {//在当前目录查找指定文件，返回inode，失败时返回NULL
 		int p = findFile(s);
 		if (p == -1)
