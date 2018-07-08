@@ -327,8 +327,8 @@ public:
 	
 	
 	int findFile(string s) {//根据文件名找文件，没找到则返回-1
-		int p = find(s);
-		if (INODE[num[p]].type != 1) {
+		int p = find(s);     
+        if (p!=-1 && INODE[num[p]].type != 1) {
 			p = -1;
 		}
 		if (p != -1)
@@ -356,7 +356,8 @@ public:
 	// ->openFile("1.txt","user",1)
 	int openFile(string s, string user,int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
 		int p = findFile(s);	                    //method 1：读  2：写
-		if (p == -1)
+        cout<<"p--index:"<<p<<endl;
+        if (p == -1)
 			return -1;
 		//return -2;
 		if (INODE[num[p]].nwrite == 1)

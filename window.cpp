@@ -176,7 +176,14 @@ void Window::inodePrint(){
 
 void Window::memoryPrint(){
     int i=0;
+    QTableWidget *w=ui->tableWidget_2;
     while (i<MSIZE) {
+        if(REM.num[i]==0)
+            setGrid(w,i/10,i%10,Qt::white);
+        else if(REM.flag[i]==0)
+            setGrid(w,i/10,i%10,Qt::gray);
+        else if(REM.flag[i]==1)
+            setGrid(w,i/10,i%10,Qt::green);
         i++;
     }
 }
