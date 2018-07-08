@@ -14,9 +14,12 @@ Window::Window(QWidget *parent) :
 
     //ui配置
     ui->tableWidget->setRowCount(SIZE/16+1);
+
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
     ui->lt_users->horizontalHeader()->setStretchLastSection(true);
+    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
+    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
@@ -29,6 +32,14 @@ Window::Window(QWidget *parent) :
     if(!timer.isActive())
         timer.start();
     qDebug()<<"主界面构造完毕";
+
+    //ui->tableWidget->setStyleSheet("selection-background-color:");
+    ui->tableWidget_3->setRowCount(ISIZE);
+
+    test();
+    //刷新一次
+
+
 }
 
 Window::~Window()
@@ -136,16 +147,14 @@ void Window::blockPrint(){
 }
 
 void Window::initUserList(){
-    int row=ui->lt_users->rowCount();
-    for(int i=row;i>=0;i--){
-        ui->lt_users->removeRow(i);
-        qDebug()<<i;
-    }
-    for(int i=0;i<USER.size();i++){
-        qDebug()<<"inituserlist"<<i;
-        ui->lt_users->insertRow(i+1);
+    ui->lt_users->clear();//clear包括表头
+    ui->lt_users->setColumnCount(2);
+    ui->lt_users->setRowCount(USER.size());
+    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
+    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
-        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status));
+        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?"已登录":"未登录"));
     }
 }
 

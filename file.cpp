@@ -65,6 +65,7 @@ int filsys::i_get() {
 	if (!B_FLAG[p]) {
 		B_FLAG[p] = true;
 	}
+	REM.push(di);
 	INODE[di].status = 1;
 	INODE[di].addr[0] = d_get();
 	return di;
@@ -87,6 +88,7 @@ int filsys::i_put(int di) {
 		ifree[ninode] = di;
 		ninode++;
 	}
+	REM.pop(di);
 	INODE[di].status = 0;
 	for (int i = 0; i < 8; i++) {
 		if (INODE[di].addr[i] != -1) {
