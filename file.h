@@ -10,25 +10,42 @@
 
 using namespace std;
 const int SIZE = 310;//总块数
-const int ISIZE = 10;//保存inode的块数
+const int ISIZE = 14;//保存inode的块数
 const int DSIZE = 300;//保存数据的块数
 const int MSIZE = 200;
 const int BLOCKSIZE = 8;//一块的字节大小
 const int BLOCKTOI = 16;//一块保存inode数量
+/*
+Users::addUser("1", "abc");
+Users::loginIn("1", "abc");
+Users::loginOut("1");
+*/
 
 /*
-文件权限问题 用户组
-内存显示
+-----------文件权限问题 
+用户组
+----------------------内存显示
 目录文件的保存 inode的保存
 空闲表的显示
 文件不存在 读写问题
-用户登出时 login out
+---------------------用户登出时 login out
 父目录和子目录同名
+更新时间 
 */
 
 class dir;
 class inode;
 class user;
+extern int UID;
+class Users {
+public:
+	static int findUser(string n);
+	static bool addUser(string n, string pas);
+	static int loginIn(string n, string pas);
+	static void loginOut(string n);
+	static int getUid(string n);
+	static bool removeUser(string n);
+};
 extern dir* newDir(string s);
 
 class block {
@@ -150,10 +167,12 @@ public:
 	int type;  //1:文件 2：目录
 	int size;  //文件大小，字节
 	int status; //状态，是否被分配
-	int right; //权限，   
+	int right; //权限   
 	int addr[8]; //直接参照
 	int nwrite; //是否正在被写
 	int nread; //正在被读的数量
+	int uid;//用户id
+	int gid;//组id
 	dir *pdir;
 
 	inode() {
@@ -193,11 +212,28 @@ public:
 			cout << addr[i] << "*" << BLOCK[ISIZE + addr[i]].data << endl;
 		}
 	}
-
+	bool getRight(int x){// rwx rwx rwx |x: 987 654 321 | 自己 用户组 其他 
+		int r[4];
+		r[3] = right / 100;
+		r[2] = right / 10 % 10;
+		r[1] = right % 10;
+		int p = (x - 1) / 3 + 1;
+		int i = x % 3;
+		switch (i)
+		{
+		case 1:
+			return r[p] % 2 == 1;
+		case 2:
+			return r[p] / 2 % 2 == 1;
+		case 0:
+			return r[p] / 4 % 2 == 1;
+		}
+	}
+	void setRight(int m) {
+		right = m;
+	}
 };
 extern inode INODE[BLOCKTOI * ISIZE+5];
-
-
 
 class dir {
 private:
@@ -235,7 +271,16 @@ private:
 		}
 		return -1;
 	}
-   
+	bool haveRight(string user,string name,int method) { //method 1：读  2：写  3:执行
+		int id = Users::getUid(user);
+		int p = find(name);
+		if (INODE[num[p]].uid == id) {
+			return INODE[num[p]].getRight(10-method);
+		}
+		//组的放这里
+
+		return INODE[num[p]].getRight(4-method);
+	}
 public:
 	int num[100];
 	string name[100];
@@ -351,15 +396,28 @@ public:
 		num[p] = di;
 		return true;
 	}
-	
+	void setUser(string s, string user) {
+		int p = find(s);
+		if (p == -1)
+			return;
+		int uid =Users::getUid(user);
+		INODE[num[p]].uid = uid;
+	}
+	void setRight(string s, int right) {
+		int p = find(s);
+		if (p == -1)
+			return;
+		INODE[num[p]].setRight(right);
+	}
 	/*权限还没写*/
 	// ->openFile("1.txt","user",1)
 	int openFile(string s, string user,int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
-		int p = findFile(s);	                    //method 1：读  2：写
+		int p = findFile(s);	                    //method 1：读  2：写   3:执行
         cout<<"p--index:"<<p<<endl;
         if (p == -1)
 			return -1;
-		//return -2;
+		if (!haveRight(user, s, method))
+			return -2;
 		if (INODE[num[p]].nwrite == 1)
 			return 0;
 		if (method == 1) {
@@ -420,65 +478,13 @@ public:
 	string name;
 	string password;
 	dir* pdir;
+	int uid;
 	int status; // 0:离线 1:在线
 };
 extern vector<user> USER;
 extern dir* ROOT;
 extern dir* HOME;
 
-/*
-Users::addUser("1", "abc");
-Users::loginIn("1", "abc");
-Users::loginOut("1");
-*/
-class Users{
-public:
-	static int findUser(string n) {
-		for (int i = 0; i < USER.size(); i++) {
-			if (USER[i].name == n)
-				return i;
-		}
-		return -1;
-	}
-	static bool addUser(string n,string pas) {
-		if (findUser(n) != -1) {
-			cerr << "用户名冲突" << endl;
-			return false;
-		}
-		user *p = new user;
-		p->name = n;
-		p->password = pas;
-		p->status = 0;
-
-		HOME->addDir(n);
-		USER.push_back(*p);
-        return true;
-	}
-	static int loginIn(string n, string pas) {
-		int x = findUser(n);
-		if (x == -1) {
-			cerr << "用户不存在" << endl;
-			return -1;
-		}
-		else if (USER[x].status == 1) {
-			cerr << "用户已登录" << endl;
-			return 0;
-		}
-		else if (USER[x].password != pas) {
-			cerr << "密码错误" << endl;
-			return -2;
-		}
-		else {//成功
-			USER[x].status = 1;
-			return 1; 
-		}
-	}
-	static void loginOut(string n){
-		int x = findUser(n);
-		USER[x].status = 0;
-	}
-	static bool removeUser(string n);
-};
 
 class print {
 public:

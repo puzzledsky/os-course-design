@@ -1,11 +1,14 @@
 #include "login.h"
 #include "ui_login.h"
-//999
-Login::Login(QWidget *parent) :
+
+Login::Login(QWidget *parent,QString name,QString pwd) :
     QDialog(parent),
     ui(new Ui::Login)
 {
     ui->setupUi(this);
+    this->setWindowTitle(u8"登录");
+    ui->lineEdit_name->setText(name);
+    ui->lineEdit_pwd->setText(pwd);
 }
 
 Login::~Login()

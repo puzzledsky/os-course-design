@@ -29,8 +29,12 @@ void SubForm::setName(QString string)
 
 SubForm::~SubForm()
 {
-    Users::loginOut(name.toStdString());
     delete ui;
+}
+
+void SubForm::closeEvent(QCloseEvent *event){
+    cout<<"exit"<<endl;
+    Users::loginOut(name.toStdString());
 }
 
 //没有编辑文件时按下enter键时的操作

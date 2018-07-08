@@ -13,7 +13,7 @@ class Login : public QDialog
     Q_OBJECT
 
 public:
-    explicit Login(QWidget *parent = 0);
+    explicit Login(QWidget *parent,QString name,QString pwd);
     ~Login();
     QString getpwd();
     QString getname();
