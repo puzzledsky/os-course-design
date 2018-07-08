@@ -70,7 +70,6 @@ void SubForm::getFun()
             if(mlings[mling] == vi){//创建新文件
                 QString tt = mlings.at(1);
                 int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
-                ui->textEdit->append("-------------------");
                 if(t == -1){
                     THIS->addFile(tt.toStdString());
                     isEdit = true;
@@ -82,6 +81,7 @@ void SubForm::getFun()
                 }else{
                     string str = THIS->readFile(tt.toStdString());
                     isEdit = true;
+                    ui->textEdit->clear();
                     ui->textEdit->append(QString::fromStdString(str));
                 }
             }else if(mlings.at(mling) == rm){//删除文件
@@ -98,6 +98,7 @@ void SubForm::getFun()
                     THIS->removeFile(tt.toStdString());
                     outputerror("File delete success!");
                 }
+                THIS->closeFlie(tt.toStdString(),2);
             }else if(mlings.at(mling) == cat){//读文件
                 //显示文件内容
                 QString tt = mlings.at(1);
@@ -110,6 +111,7 @@ void SubForm::getFun()
                     string s = THIS->readFile(tt.toStdString());
                     ui->textEdit->append(QString::fromStdString(s));
                 }
+                THIS->closeFlie(tt.toStdString(),1);
             }
         }else{
             outputerror("Input error!");
@@ -249,7 +251,9 @@ void SubForm::storeFile(){
         //新建一个文件
         t = mlings.at(1);
 //        THIS->addFile(t.toStdString());
+        ui->textEdit->append(t + "-------------------");
         THIS->writeFile(t.toStdString(),newfile.toStdString());
+        THIS->closeFlie(t.toStdString(),2);
         outputerror("File store success!");
         ui->textEdit->setTextColor(QColor(255,0,255));
         ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
