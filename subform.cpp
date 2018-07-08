@@ -24,6 +24,7 @@ void SubForm::setName(QString string)
 {
     name = string;
     THIS = HOME->in(name.toStdString());
+    USER = THIS;
 }
 
 SubForm::~SubForm()
@@ -137,7 +138,7 @@ void SubForm::getFun()
         QString t = mlings.at(1);
         if(mlings.size() == 2){
             dir *p = THIS->in(t.toStdString());
-            if(p != NULL){
+            if(p->getName() != THIS->getName()){
                 p->remove();
                 outputerror("delete dir success!");
             }else{
@@ -146,6 +147,38 @@ void SubForm::getFun()
         }else{
             outputerror("input error!");
         }
+    }else if(mlings[mling] == pwd){
+        QStringList q;
+        QString string;
+        q.append(QString::fromStdString(THIS->getName()));
+        dir *p = THIS->out();
+        while(p->getName() != "root"){
+            q.append(QString::fromStdString(p->getName()));
+            p = p->out();
+        }
+        q.append("root");
+        for(int i = q.size()-1; i>=0; i--){
+            string.append("/" + q.at(i));
+        }
+        ui->textEdit->append(string);
+    }else if(mlings[mling] == cd){
+        if(mlings.size() == 1){
+            THIS = USER;
+        }else if(mlings.size() == 2){
+            if(mlings.at(1) == ".."){
+                THIS = THIS->out();
+            }else if(mlings.at(1) == "/"){
+                THIS = ROOT;
+            }else{
+                QString t = mlings.at(1);
+                dir *p = THIS->in(t.toStdString());
+                if(p->getName() != THIS->getName()){
+                    THIS = p;
+                }else{
+                    outputerror("dir not exit!");
+                }
+            }
+        }
     }else{
         outputerror("Input error!");
     }
@@ -153,14 +186,10 @@ void SubForm::getFun()
 
 void SubForm::outputerror(QString string)
 {
-//    ui->textEdit->setTextColor(QColor(255,0,255));
-//    ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()));
     ui->textEdit->setTextColor(QColor(255,0,0));
     ui->textEdit->append(string);
     ui->textEdit->setTextColor(QColor(0,0,0));
 }
-
-
 
 bool SubForm::eventFilter(QObject *obj, QEvent *event)
 {
@@ -215,5 +244,4 @@ void SubForm::storeFile(){
         ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
-
 }
