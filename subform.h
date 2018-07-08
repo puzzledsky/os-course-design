@@ -57,6 +57,8 @@ private:
     QString vi = "vi";//新建一个文本文件，后接文件名，同时进入文本编辑器----
     QString wq = ":w q";//将文件写盘并退出vi--------------------------
     QString pwd = "pwd";//显示用户当前所在路径的全名--------------------
+    QString uesrmod = "usermod";//将用户加入用户组
+    QString groupadd = "groupadd";//新建一个用户组
 
 };
 

@@ -68,29 +68,47 @@ void SubForm::getFun()
     if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
         if(mlings.size() == 2){
             if(mlings[mling] == vi){//创建新文件
-                QString t = mlings.at(1);
-                if(THIS->addFile(t.toStdString())){
+                QString tt = mlings.at(1);
+                int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+                ui->textEdit->append("-------------------");
+                if(t == -1){
+                    THIS->addFile(tt.toStdString());
                     isEdit = true;
                     ui->textEdit->clear();
+                }else if(t == -2){
+                    outputerror("You have no property!");
+                }else if(t == 0){
+                    outputerror("The file is in use!");
                 }else{
-                    outputerror("File already exit!");
+                    string str = THIS->readFile(tt.toStdString());
+                    isEdit = true;
+                    ui->textEdit->append(QString::fromStdString(str));
                 }
             }else if(mlings.at(mling) == rm){//删除文件
                 //输入文件名，删除文件
                 QString tt = mlings.at(1);
-                if(THIS->removeFile(tt.toStdString())){
-                    outputerror("File delete success!");
+                int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+                if(t == -1){
+                    outputerror("File not exit!");
+                }else if(t == -2){
+                    outputerror("You have no property!");
+                }else if(t == 0){
+                    outputerror("File is now in use!");
                 }else{
-                    outputerror("File not exit! Delete fail!");
+                    THIS->removeFile(tt.toStdString());
+                    outputerror("File delete success!");
                 }
             }else if(mlings.at(mling) == cat){//读文件
                 //显示文件内容
                 QString tt = mlings.at(1);
-                string s = THIS->readFile(tt.toStdString());
-                if(!s.empty()){
-                    ui->textEdit->append(QString::fromStdString(s));
-                }else{
+                int t = THIS->openFile(tt.toStdString(),name.toStdString(),1);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+                if(t == -1){
                     outputerror("File not exit!");
+                }else if(t == -2){
+                    outputerror("You have no property!");
+                }else{
+                    string s = THIS->readFile(tt.toStdString());
+                    ui->textEdit->append(QString::fromStdString(s));
                 }
             }
         }else{
@@ -105,11 +123,9 @@ void SubForm::getFun()
             int tt = 0;
             QStringList temp = t.split("/");
             //temp中保存文件的路径，根据路径访问文件等
-//            tosuper.append(mlings[0]);
             for(int i = 0; i < temp.size(); i++){
                 if(temp[i] != ""){
-//                    tosuper.append(temp[i]);
-                    ui->textEdit->append(temp[i]);
+                    temp.removeAt(i);
                     tt = 0;
                 }else{
                     tt++;
@@ -119,6 +135,7 @@ void SubForm::getFun()
                     }
                 }
             }
+//            if()
         }else{
             outputerror("Input error!");
         }
@@ -138,12 +155,15 @@ void SubForm::getFun()
         QString t = mlings.at(1);
         if(mlings.size() == 2){
             dir *p = THIS->in(t.toStdString());
+//            if(p->)
             if(p->getName() != THIS->getName()){
                 p->remove();
                 outputerror("delete dir success!");
             }else{
                 outputerror("dir not exit!");
             }
+        }else if(mlings.size() == 3){
+
         }else{
             outputerror("input error!");
         }
