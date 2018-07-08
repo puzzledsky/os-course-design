@@ -1,14 +1,28 @@
 ﻿#include "window.h"
 #include "ui_window.h"
 
+void test(){//测试代码
+    ROOT->addFile("1.txt");
+    ROOT->writeFile("1.txt","1111111111111111111111111111111111111111");
+}
 
 Window::Window(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Window)
 {
     ui->setupUi(this);
-    dir root("root");
-    root.print();
+
+    //ui配置
+    ui->tableWidget->setRowCount(SIZE/16+1);
+    ui->lt_users->horizontalHeader()->setStretchLastSection(true);
+    ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    test();
+    //刷新一次
+    timer.setInterval(500);
+    connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
+    if(!timer.isActive()){timer.start();}
+    qDebug()<<"主界面构造完毕";
 }
 
 Window::~Window()
@@ -72,4 +86,49 @@ void Window::on_bt_offwindow_clicked()
                                                QMessageBox::Yes | QMessageBox::No,
                                                QMessageBox::Yes));
         this->close();
+}
+
+void Window::update(){
+    qDebug()<<"update";
+    blockPrint();
+    initUserList();
+}
+
+void Window::setGrid(QTableWidget* widget,int x,int y,QColor c){
+    QTableWidgetItem *item=new QTableWidgetItem("");
+    item->setBackgroundColor(c);
+    widget->setItem(x,y,item);
+}
+
+void Window::blockPrint(){
+    QTableWidget *w=ui->tableWidget;
+    setGrid(w,0,0,Qt::red);
+    setGrid(w,0,1,Qt::blue);
+    int i=1;
+    while (i<ISIZE) {
+        if(B_FLAG[i])
+            setGrid(w,(i+2)/16,(i+2)%16,Qt::yellow);
+        i++;
+    }
+    while (i<SIZE) {
+        if(B_FLAG[i]){
+             setGrid(w,(i+2)/16,(i+2)%16,Qt::green);
+        }
+        i++;
+    }
+
+}
+
+void Window::initUserList(){
+    int row=ui->lt_users->rowCount();
+    for(int i=row;i>=0;i--){
+        ui->lt_users->removeRow(i);
+        qDebug()<<i;
+    }
+    for(int i=0;i<USER.size();i++){
+        qDebug()<<"inituserlist"<<i;
+        ui->lt_users->insertRow(i+1);
+        ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
+        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status));
+    }
 }

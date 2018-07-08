@@ -287,6 +287,9 @@ public:
 		int p = findFile(s);
 		INODE[num[p]].setData(str);
 	}
+    string getName(){
+        return name[1];
+    }
 };
 
 class user {

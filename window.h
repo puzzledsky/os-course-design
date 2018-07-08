@@ -2,8 +2,10 @@
 #define WINDOW_H
 
 #include <QWidget>
+#include <QTableWidget>
 #include <QMessageBox>
-//#include <bits/stdc++.h>
+#include <QTimer>
+#include <QDebug>
 #include "file.h"
 #include "login.h"
 #include "subform.h"
@@ -24,7 +26,6 @@ public:
 
 private slots:
 
-
     void on_cLB_Login_clicked();
 
     void on_cLB_openCatalog_clicked();
@@ -33,12 +34,21 @@ private slots:
 
     void on_bt_offwindow_clicked();
 
+    void update();//所有ui的刷新
+
+    void setGrid(QTableWidget* widget,int x,int y,QColor c);
+
+    void blockPrint();
+
+    void initUserList();
+
 private:
     Ui::Window *ui;
     SubForm *form;
     Login *login;
     widget_catalog *catalog;
     Dialog_adduser *adduser;
+    QTimer timer;
 };
 
 #endif // WINDOW_H

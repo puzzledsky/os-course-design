@@ -5,10 +5,6 @@
 #include "file.h"
 
 #define mling 0
-//#define filename 1
-//#define filepath 2
-//#define despath 3
-//#define desfilename 4
 
 namespace Ui {
 class SubForm;
@@ -26,13 +22,13 @@ public:
     void reactionFunction();
     void getFun();
     void outputerror();
-    void editFile();
     void CD();
     void MKDIR();
     void LS();
     void FIND();
     void VI();//新建文件，存储文件内容，并将其加入目录中
     void setName(QString string);
+    void storeFile();
 
 protected:
      bool eventFilter(QObject *obj, QEvent *event);
@@ -43,6 +39,7 @@ private:
     dir *THIS;
     QString newfile; //新建文档的内容存储在字符串中
     bool isEdit;//是否处在编辑状态
+    bool endEdit;//完成编辑
     Ui::SubForm *ui;
     QString ml;//用户输入的操作指令
     QStringList mlings; //其中的内容分别为：文件名、文件路径、目的文件路径、目的文件名
