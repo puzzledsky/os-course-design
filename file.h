@@ -35,8 +35,8 @@ class block {
 public:
 	string data = "";//大小为512
 };
-extern bool B_FLAG[SIZE];//是否已使用
-extern block BLOCK[SIZE];
+extern bool B_FLAG[SIZE+5];//是否已使用
+extern block BLOCK[SIZE+5];
 
 class memory {
 public:
@@ -195,7 +195,7 @@ public:
 	}
 
 };
-extern inode INODE[BLOCKTOI * ISIZE];
+extern inode INODE[BLOCKTOI * ISIZE+5];
 
 
 

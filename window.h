@@ -51,6 +51,10 @@ private slots:
     void on_tableWidget_cellClicked(int row, int column);
     void logInfo(QString s); //信息显示，暂时是控制台输出
 
+    void on_tableWidget_3_cellClicked(int row, int column);
+
+    void on_tableWidget_2_cellClicked(int row, int column);
+
 private:
     Ui::Window *ui;
     SubForm *form;

@@ -35,7 +35,7 @@
     <number>1</number>
    </property>
    <attribute name="horizontalHeaderVisible">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <attribute name="horizontalHeaderMinimumSectionSize">
     <number>9</number>
@@ -182,6 +182,9 @@
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <property name="rowCount">
     <number>10</number>
@@ -330,8 +333,8 @@
   <widget class="QTableWidget" name="tableWidget_2">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>350</y>
+     <x>420</x>
+     <y>360</y>
      <width>203</width>
      <height>191</height>
     </rect>
@@ -349,6 +352,9 @@
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <property name="rowCount">
     <number>10</number>
@@ -448,6 +454,9 @@
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <property name="rowCount">
     <number>10</number>
@@ -620,9 +629,9 @@
   <widget class="QTextEdit" name="Logs">
    <property name="geometry">
     <rect>
-     <x>720</x>
+     <x>690</x>
      <y>350</y>
-     <width>151</width>
+     <width>201</width>
      <height>191</height>
     </rect>
    </property>
@@ -639,7 +648,7 @@
     </font>
    </property>
    <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
+    <enum>Qt::ScrollBarAsNeeded</enum>
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
