@@ -5,10 +5,15 @@ bool B_FLAG[SIZE];//磁盘块是否被使用
 block BLOCK[SIZE];//磁盘块
 inode INODE[BLOCKTOI * ISIZE];//磁盘中INODE区域
 filsys sblock;//超级块，负责inode和数据块的分配回收
+memory REM;//内存块
 vector<user> USER;//保存所有用户信息
 dir* ROOT;//根目录
 dir* HOME;// Root\Home\用户目录
 
+dir* newDir(string s) {
+	dir* p = new dir(s);
+	return p;
+}
 /*filsys定义*/
 filsys::filsys() {
 	isize = ISIZE * BLOCKTOI;
@@ -25,9 +30,8 @@ void filsys::init() {
 	for (int i = 0; i < SIZE; i++) {
 		B_FLAG[i] = false;
 	}
-	ROOT = new dir("root");
-	HOME = new dir("home");
-	ROOT->addDir(*HOME);
+	ROOT = newDir("root");
+	HOME = ROOT->addDir("home");
 }
 void filsys::i_setFree() {
 	for (int i = 1; i < isize; i++) {

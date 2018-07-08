@@ -6,11 +6,13 @@
 #include<iostream>
 #include<fstream>
 #include<vector>
+#include<set>
 
 using namespace std;
 const int SIZE = 210;//总块数
 const int ISIZE = 10;//保存inode的块数
 const int DSIZE = 200;//保存数据的块数
+const int MSIZE = 100;
 const int BLOCKSIZE = 8;//一块的字节大小
 const int BLOCKTOI = 2;//一块保存inode数量
 
@@ -19,11 +21,14 @@ const int BLOCKTOI = 2;//一块保存inode数量
 内存问题
 目录文件的保存 inode的保存
 用户组
+空闲表的显示
+文件不存在 读写问题
 */
 
 class dir;
 class inode;
 class user;
+extern dir* newDir(string s);
 
 class block {
 public:
@@ -31,6 +36,19 @@ public:
 };
 extern bool B_FLAG[SIZE];//是否已使用
 extern block BLOCK[SIZE];
+
+class memory {
+public:
+	int inode[MSIZE];
+	bool flag[MSIZE];
+	memory() {
+		for (int i = 0; i < MSIZE; i++)
+			flag[i] = false;
+	}
+	void push(int x);
+	void pop(int x);
+};
+extern memory REM;
 
 class filsys {//超级块
 private:
@@ -129,10 +147,7 @@ public:
 };
 extern inode INODE[BLOCKTOI * ISIZE];
 
-class memory {
-	
-};
-extern memory mem;
+
 
 class dir {
 private:
@@ -186,12 +201,19 @@ public:
 		INODE[di].type = 2;
 	}
 	
-	void addDir(dir& x) {//命名冲突？
+	dir* addDir(string s) {//s:目录名
+		dir* f = getParent();
+		if (f && f->find(s) != -1) {
+			cerr << "命名冲突" << endl;
+			return NULL;
+		}
+		dir* x = newDir(s);
 		int p = getFree();
-		name[p] = x.name[1];
-		num[p] = x.num[1];
-		x.num[0] = num[1];
-		x.name[0] = name[1];
+		name[p] = x->name[1];
+		num[p] = x->num[1];
+		x->num[0] = num[1];
+		x->name[0] = name[1];
+		return x;
 	}
 	void remove() {//删除目录自己，包括子目录和文件
 		for (int i = 2; i < nsub; i++) {
@@ -328,12 +350,11 @@ public:
 			return false;
 		}
 		user *p = new user;
-		dir *d = new dir(n);
 		p->name = n;
 		p->password = pas;
 		p->status = 0;
 
-		HOME->addDir(*d);
+		HOME->addDir(n);
 		USER.push_back(*p);
         return true;
 	}
