@@ -173,13 +173,6 @@ private:
 		}
 		return -1;
 	}
-	int findFile(string s) {
-		int p = find(s);
-		if (INODE[num[p]].type != 1) {
-			p = -1;
-		}
-		return p;
-	}
 	
 public:
 	dir(string s) {
@@ -253,7 +246,13 @@ public:
 		return INODE[num[0]].pdir;
 	}
 	
-
+	int findFile(string s) {
+		int p = find(s);
+		if (INODE[num[p]].type != 1) {
+			p = -1;
+		}
+		return p;
+	}
 	inode* getFile(string s) {//在当前目录查找指定文件，返回inode，失败时返回NULL
 		int p = findFile(s);
 		if (p == -1)
