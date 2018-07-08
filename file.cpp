@@ -1,15 +1,20 @@
-#include"file.h"
-/*È«¾Ö±äÁ¿*/
+ï»¿#include"file.h"
+/*å…¨å±€å˜é‡*/
 
-bool B_FLAG[SIZE];//´ÅÅÌ¿éÊÇ·ñ±»Ê¹ÓÃ
-block BLOCK[SIZE];//´ÅÅÌ¿é
-inode INODE[BLOCKTOI * ISIZE];//´ÅÅÌÖĞINODEÇøÓò
-filsys sblock;//³¬¼¶¿é£¬¸ºÔğinodeºÍÊı¾İ¿éµÄ·ÖÅä»ØÊÕ
-vector<user> USER;//±£´æËùÓĞÓÃ»§ĞÅÏ¢
-dir* ROOT;//¸ùÄ¿Â¼
-dir* HOME;// Root\Home\ÓÃ»§Ä¿Â¼
+bool B_FLAG[SIZE];//ç£ç›˜å—æ˜¯å¦è¢«ä½¿ç”¨
+block BLOCK[SIZE];//ç£ç›˜å—
+inode INODE[BLOCKTOI * ISIZE];//ç£ç›˜ä¸­INODEåŒºåŸŸ
+filsys sblock;//è¶…çº§å—ï¼Œè´Ÿè´£inodeå’Œæ•°æ®å—çš„åˆ†é…å›æ”¶
+memory REM;//å†…å­˜å—
+vector<user> USER;//ä¿å­˜æ‰€æœ‰ç”¨æˆ·ä¿¡æ¯
+dir* ROOT;//æ ¹ç›®å½•
+dir* HOME;// Root\Home\ç”¨æˆ·ç›®å½•
 
-/*filsys¶¨Òå*/
+dir* newDir(string s) {
+	dir* p = new dir(s);
+	return p;
+}
+/*filsyså®šä¹‰*/
 filsys::filsys() {
 	isize = ISIZE * BLOCKTOI;
 	dsize = DSIZE;
@@ -25,9 +30,8 @@ void filsys::init() {
 	for (int i = 0; i < SIZE; i++) {
 		B_FLAG[i] = false;
 	}
-	ROOT = new dir("root");
-	HOME = new dir("home");
-	ROOT->addDir(*HOME);
+	ROOT = newDir("root");
+	HOME = ROOT->addDir("home");
 }
 void filsys::i_setFree() {
 	for (int i = 1; i < isize; i++) {
@@ -51,7 +55,7 @@ int filsys::i_get() {
 	if (ninode == 0) {
 		i_setFree();
 		if (ninode == 0) {
-			cerr << "inodeÇø¿Õ¼ä²»×ã" << endl;
+			cerr << "inodeåŒºç©ºé—´ä¸è¶³" << endl;
 			return -1;
 		}
 	}
@@ -69,7 +73,7 @@ int filsys::d_get() {
 	if (ndata == 0) {
 		d_setFree();
 		if (ndata == 0) {
-			cerr << "´æ´¢Çø¿Õ¼ä²»×ã" << endl;
+			cerr << "å­˜å‚¨åŒºç©ºé—´ä¸è¶³" << endl;
 			return -1;
 		}
 	}

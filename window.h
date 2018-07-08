@@ -4,8 +4,12 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QMessageBox>
+<<<<<<< HEAD
 #include <QTimer>
 #include <QDebug>
+=======
+#include <QTime>
+>>>>>>> f9f3272f26b507e0c60421b6fb9c613beadedf65
 #include "file.h"
 #include "login.h"
 #include "subform.h"
@@ -39,9 +43,15 @@ private slots:
     void setGrid(QTableWidget* widget,int x,int y,QColor c);
 
     void blockPrint();
+<<<<<<< HEAD
 
     void initUserList();
 
+=======
+    void inodePrint();
+    void on_tableWidget_cellClicked(int row, int column);
+    void logInfo(QString s); //信息显示，暂时是控制台输出
+>>>>>>> f9f3272f26b507e0c60421b6fb9c613beadedf65
 private:
     Ui::Window *ui;
     SubForm *form;

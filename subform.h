@@ -15,13 +15,13 @@ class SubForm : public QDialog
     Q_OBJECT
 
 public:
-    explicit SubForm(QWidget *parent = 0);
+    explicit SubForm(QWidget *parent = 0,QString string = NULL);
     ~SubForm();
 
     void returnReaction();
     void reactionFunction();
     void getFun();
-    void outputerror();
+    void outputerror(QString string);
     void CD();
     void MKDIR();
     void LS();
