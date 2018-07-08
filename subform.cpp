@@ -65,7 +65,102 @@ void SubForm::getFun()
         }
     }
     //根据不同的命令进行不同的操作
-    if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
+    if(mlings.at(mling) == mv){
+        if(mlings.size() != 3){
+            outputerror("input error!");
+            return;
+        }else{
+            QString t1 = mlings.at(1);
+            QString t2 = mlings.at(2);
+            if(t1 == t2){
+                outputerror("file name error!");
+                return;
+            }
+            int t = THIS->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+            if(t == -1){
+                outputerror("File not exit!");
+                return;
+            }else if(t == -2){
+                outputerror("You have no property!");
+            }else if(t == 0){
+                outputerror("The file is in use!");
+            }else{
+                string str = THIS->readFile(t1.toStdString());
+                if(!t2.startsWith("/")){//t2表示一个文件名
+                    int t0 = THIS->openFile(t2.toStdString(),name.toStdString(),2);
+                    if(t0 == -1){
+                        //新建一个文件t2
+                        THIS->renameFile(t1.toStdString(),t2.toStdString());
+                        THIS->closeFlie(t1.toStdString(),2);
+                        outputerror("rename file success!");
+                    }else if(t0 == -2){
+                        outputerror("You have no property!");
+                    }else if(t == 0){
+                        outputerror("The file is in use!");
+                    }else{
+                        //修改文件内容
+                        THIS->writeFile(t2.toStdString(),str);
+                        THIS->removeFile(t1.toStdString());
+                        outputerror("modify file success!");
+                    }
+                    THIS->closeFlie(t2.toStdString(),2);
+                }else if(t2.startsWith("/")){//t2表示新的文件路径
+                    int tt = 0;
+                    QStringList temp = t2.split("/");
+                    //temp中保存文件的路径，根据路径访问文件等
+                    for(int i = 0; i < temp.size(); i++){
+                        if(temp[i] != ""){
+                            temp.removeAt(i);
+                            tt = 0;
+                        }else{
+                            tt++;
+                            if(tt == 2){
+                                outputerror("Input error!");
+                                return;
+                            }
+                        }
+                    }
+                    if(temp.at(0) == name){
+                        dir * p = USER;
+                        dir * q;
+                        QString s = temp.at(1);
+                        for(int i = 1; i < temp.size(); i++){
+                            s = temp.at(i);
+                            q = p->in(s.toStdString());
+                            if(q->getName() == p->getName()){
+                                outputerror("path not exit!");
+                                return;
+                            }
+                        }
+                        THIS->removeFile(t1.toStdString());
+                        q->addFile(t1.toStdString());
+                        q->writeFile(t1.toStdString(),str);
+                    }else{
+                        QString s = temp.at(0);
+                        dir * p = HOME->in(s.toStdString());
+                        if(p->getName() == "home"){
+                            outputerror("dir is not exit!p == home!");
+                            return;
+                        }else{
+                            dir * q;
+                            for(int i = 1; i < temp.size(); i++){
+                                s = temp.at(i);
+                                q = p->in(s.toStdString());
+                                if(p->getName() == q->getName()){
+                                    outputerror("path not exit!");
+                                    return;
+                                }
+                            }
+                            THIS->removeFile(t1.toStdString());
+                            q->addFile(t1.toStdString());
+                            q->writeFile(t1.toStdString(),str);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
         if(mlings.size() == 2){
 
             if(mlings[mling] == vi){//创建新文件
@@ -122,31 +217,12 @@ void SubForm::getFun()
 
     }else if(mlings[mling] == ls){//列出目录内容
         if(mlings.size() == 1){
-            for(int i = 0; i < MSIZE; i++){
-                ui->textEdit->append("-------------");
-                if(THIS->num[i] == 1){
-                    ui->textEdit->append("-------------");
+            for(int i = 2; i < THIS->nsub; i++){
+                if(THIS->num[i] != 0){
                     ui->textEdit->append(QString::fromStdString(THIS->name[i]));
                 }
             }
-//            if(!t.startsWith("/") || t.endsWith("/")){
-//                outputerror("Input error!");
-//            }
-//            int tt = 0;
-//            QStringList temp = t.split("/");
-//            //temp中保存文件的路径，根据路径访问文件等
-//            for(int i = 0; i < temp.size(); i++){
-//                if(temp[i] != ""){
-//                    temp.removeAt(i);
-//                    tt = 0;
-//                }else{
-//                    tt++;
-//                    if(tt == 2){
-//                        outputerror("Input error!");
-//                        break;
-//                    }
-//                }
-//            }
+
         }else{
             outputerror("Input error!");
         }
@@ -166,32 +242,38 @@ void SubForm::getFun()
 
     }else if(mlings[mling] == rmdir){//删除目录
         int num1 = 0;
-        for(int i = 0; i < MSIZE; i++){
-            if(THIS->num[i] == 1){
-                num1++;
-            }
-        }
-        if(mlings.size() == 2 && num1 == 0){
+        if(mlings.size() == 2){
             QString t = mlings.at(1);
             dir *p = THIS->in(t.toStdString());
-            if(p->getName() != THIS->getName()){
+            if(p->getName() == THIS->getName()){
+                outputerror("dir not exit!");
+                return;
+            }
+            for(int i = 2; i < p->nsub; i++){
+                ui->textEdit->append(QString::fromStdString(p->getName()));
+                if(p->num[i] != 0){
+                    ui->textEdit->append(QString::fromStdString(p->name[i]));
+                    num1++;
+                }
+            }
+            if(num1 != 0){
+                 outputerror("the dir is not empty,use -r to delete it and the file in it!");
+                return;
+            }else{
                 p->remove();
                 outputerror("delete dir success!");
-            }else{
-                outputerror("dir not exit!");
             }
         }else if(mlings.size() == 3){
             QString t = mlings.at(2);
             dir *p = THIS->in(t.toStdString());
             if(mlings.at(1) == "-r" && p->getName() != THIS->getName()){
                 p->remove();
+                outputerror("delete dir success!");
             }else if(p->getName() != THIS->getName()){
                 outputerror("dir is not exit");
             }else{
                 outputerror("input error!");
             }
-        }else if(num1 != 0){
-            outputerror("the dir is not empty,use -r to delete it and the file in it!");
         }else{
             outputerror("input error!");
         }
