@@ -22,7 +22,8 @@ Users::loginOut("1");
 */
 
 /*
-文件权限问题 用户组
+-----------文件权限问题 
+用户组
 ----------------------内存显示
 目录文件的保存 inode的保存
 空闲表的显示
@@ -402,7 +403,12 @@ public:
 		int uid =Users::getUid(user);
 		INODE[num[p]].uid = uid;
 	}
-
+	void setRight(string s, int right) {
+		int p = find(s);
+		if (p == -1)
+			return;
+		INODE[num[p]].setRight(right);
+	}
 	/*权限还没写*/
 	// ->openFile("1.txt","user",1)
 	int openFile(string s, string user,int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
