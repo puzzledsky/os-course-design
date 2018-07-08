@@ -39,13 +39,20 @@ extern block BLOCK[SIZE];
 
 class memory {
 public:
-	int inode[MSIZE];
-	bool flag[MSIZE];
+	int num[MSIZE];
+	bool flag[MSIZE];//正在被使用
 	memory() {
 		for (int i = 0; i < MSIZE; i++)
 			flag[i] = false;
+		for (int i = 0; i < MSIZE; i++)
+			num[i] = 0;
 	}
-	void push(int x);
+	void push(int x) {
+		int p=-1;
+		for (int i = 0; i < MSIZE; i++) {
+			
+		}
+	}
 	void pop(int x);
 };
 extern memory REM;
