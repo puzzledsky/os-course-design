@@ -71,6 +71,7 @@ void SubForm::getFun()
     //根据不同的命令进行不同的操作
     if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
         if(mlings.size() == 2){
+
             if(mlings[mling] == vi){//创建新文件
                 QString tt = mlings.at(1);
                 int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
@@ -88,6 +89,7 @@ void SubForm::getFun()
                     ui->textEdit->clear();
                     ui->textEdit->append(QString::fromStdString(str));
                 }
+
             }else if(mlings.at(mling) == rm){//删除文件
                 //输入文件名，删除文件
                 QString tt = mlings.at(1);
@@ -103,6 +105,7 @@ void SubForm::getFun()
                     outputerror("File delete success!");
                 }
                 THIS->closeFlie(tt.toStdString(),2);
+
             }else if(mlings.at(mling) == cat){//读文件
                 //显示文件内容
                 QString tt = mlings.at(1);
@@ -120,31 +123,38 @@ void SubForm::getFun()
         }else{
             outputerror("Input error!");
         }
+
     }else if(mlings[mling] == ls){//列出目录内容
-        if(mlings.size() == 2){
-            QString t = mlings[1];
-            if(!t.startsWith("/") || t.endsWith("/")){
-                outputerror("Input error!");
-            }
-            int tt = 0;
-            QStringList temp = t.split("/");
-            //temp中保存文件的路径，根据路径访问文件等
-            for(int i = 0; i < temp.size(); i++){
-                if(temp[i] != ""){
-                    temp.removeAt(i);
-                    tt = 0;
-                }else{
-                    tt++;
-                    if(tt == 2){
-                        outputerror("Input error!");
-                        break;
-                    }
+        if(mlings.size() == 1){
+            for(int i = 0; i < MSIZE; i++){
+                ui->textEdit->append("-------------");
+                if(THIS->num[i] == 1){
+                    ui->textEdit->append("-------------");
+                    ui->textEdit->append(QString::fromStdString(THIS->name[i]));
                 }
             }
-//            if()
+//            if(!t.startsWith("/") || t.endsWith("/")){
+//                outputerror("Input error!");
+//            }
+//            int tt = 0;
+//            QStringList temp = t.split("/");
+//            //temp中保存文件的路径，根据路径访问文件等
+//            for(int i = 0; i < temp.size(); i++){
+//                if(temp[i] != ""){
+//                    temp.removeAt(i);
+//                    tt = 0;
+//                }else{
+//                    tt++;
+//                    if(tt == 2){
+//                        outputerror("Input error!");
+//                        break;
+//                    }
+//                }
+//            }
         }else{
             outputerror("Input error!");
         }
+
     }else if(mlings[mling] == mkdir){//创建目录
         if(mlings.size() == 2){
             QString t = mlings.at(1);
@@ -157,11 +167,17 @@ void SubForm::getFun()
         }else{
             outputerror("input error!");
         }
+
     }else if(mlings[mling] == rmdir){//删除目录
-        QString t = mlings.at(1);
-        if(mlings.size() == 2){
+        int num1 = 0;
+        for(int i = 0; i < MSIZE; i++){
+            if(THIS->num[i] == 1){
+                num1++;
+            }
+        }
+        if(mlings.size() == 2 && num1 == 0){
+            QString t = mlings.at(1);
             dir *p = THIS->in(t.toStdString());
-//            if(p->)
             if(p->getName() != THIS->getName()){
                 p->remove();
                 outputerror("delete dir success!");
@@ -169,7 +185,17 @@ void SubForm::getFun()
                 outputerror("dir not exit!");
             }
         }else if(mlings.size() == 3){
-
+            QString t = mlings.at(2);
+            dir *p = THIS->in(t.toStdString());
+            if(mlings.at(1) == "-r" && p->getName() != THIS->getName()){
+                p->remove();
+            }else if(p->getName() != THIS->getName()){
+                outputerror("dir is not exit");
+            }else{
+                outputerror("input error!");
+            }
+        }else if(num1 != 0){
+            outputerror("the dir is not empty,use -r to delete it and the file in it!");
         }else{
             outputerror("input error!");
         }
@@ -187,7 +213,8 @@ void SubForm::getFun()
             string.append("/" + q.at(i));
         }
         ui->textEdit->append(string);
-    }else if(mlings[mling] == cd){
+
+    }else if(mlings[mling] == cd){//跳转目录
         if(mlings.size() == 1){
             THIS = USER;
         }else if(mlings.size() == 2){
@@ -204,6 +231,8 @@ void SubForm::getFun()
                     outputerror("dir not exit!");
                 }
             }
+        }else{
+            outputerror("input error");
         }
     }else{
         outputerror("Input error!");
@@ -255,7 +284,7 @@ void SubForm::storeFile(){
         //新建一个文件
         t = mlings.at(1);
 //        THIS->addFile(t.toStdString());
-        ui->textEdit->append(t + "-------------------");
+//        ui->textEdit->append(t + "-------------------");
         THIS->writeFile(t.toStdString(),newfile.toStdString());
         THIS->closeFlie(t.toStdString(),2);
         outputerror("File store success!");
