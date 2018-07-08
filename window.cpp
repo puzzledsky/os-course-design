@@ -265,25 +265,45 @@ void Window::on_tableWidget_cellClicked(int row, int column)
 
 void Window::on_tableWidget_3_cellClicked(int row, int column)
 {
-    int n=16*row+column;
     QString s=u8"";
-    s.append(QString::number(n));
-    s.append((INODE[n].type==1)?u8"\n文件":u8"\n目录");
+
+    int n=16*row+column;
+    s.append(u8"inode号:\t|"+QString::number(n));
+    s.append((INODE[n].type==1)?u8"\n类型:\t|文件":u8"\n类型:\t|目录");
+    s.append(u8"\n用户ID:\t|");
+    s.append(u8"\n组ID:\t|");
+    s.append(u8"\n权限:\t|"+QString::number(INODE[n].right));
+    s.append(u8"\n长度:\t|"+QString::number(INODE[n].size));
     s.append(u8"\naddr[]信息:\n");
     for(int i=0;i<8;i++){
         if(INODE[n].addr[i]!=-1){
             s.append(QString::number(i)+u8"  "+QString::number(INODE[n].addr[i])+"\n");
         }
     }
+
+
+
     logInfo(s);
 }
 
 void Window::on_tableWidget_2_cellClicked(int row, int column)
 {
-    int n=10*row+column;
     QString s=u8"";
-    s.append(QString::number(n)+"\n");
-    s.append(u8"inode信息:\n");
-    s.append(QString::number(REM.num[n])+"\n");
+    int n=10*row+column;
+    s.append(u8"内存inode号:|"+QString::number(n)+"\n");
+    s.append(u8"磁盘inode号:|"+QString::number(REM.num[n]));
+    s.append((INODE[n].type==1)?u8"\n类型:\t|文件":u8"\n类型:\t|目录");
+    s.append(u8"\n用户ID:\t|");
+    s.append(u8"\n组ID:\t|");
+    s.append(u8"\n权限:\t|"+QString::number(INODE[n].right));
+    s.append(u8"\n访问状态:\t|");//是否加锁
+    //s.append(u8"\n:访问计数：\t|");
+    s.append(u8"\n长度:\t|"+QString::number(INODE[n].size));
+    s.append(u8"\naddr[]信息:\n");
+    for(int i=0;i<8;i++){
+        if(INODE[n].addr[i]!=-1){
+            s.append(QString::number(i)+u8"  "+QString::number(INODE[n].addr[i])+"\n");
+        }
+    }
     logInfo(s);
 }
