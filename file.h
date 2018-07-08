@@ -10,7 +10,7 @@
 
 using namespace std;
 const int SIZE = 310;//总块数
-const int ISIZE = 10;//保存inode的块数
+const int ISIZE = 14;//保存inode的块数
 const int DSIZE = 300;//保存数据的块数
 const int MSIZE = 200;
 const int BLOCKSIZE = 8;//一块的字节大小
@@ -18,11 +18,11 @@ const int BLOCKTOI = 16;//一块保存inode数量
 
 /*
 文件权限问题 用户组
-内存显示
+----------------------内存显示
 目录文件的保存 inode的保存
 空闲表的显示
 文件不存在 读写问题
-用户登出时 login out
+---------------------用户登出时 login out
 父目录和子目录同名
 */
 
@@ -150,7 +150,7 @@ public:
 	int type;  //1:文件 2：目录
 	int size;  //文件大小，字节
 	int status; //状态，是否被分配
-	int right; //权限，   
+	int right; //权限   
 	int addr[8]; //直接参照
 	int nwrite; //是否正在被写
 	int nread; //正在被读的数量
@@ -193,7 +193,9 @@ public:
 			cout << addr[i] << "*" << BLOCK[ISIZE + addr[i]].data << endl;
 		}
 	}
-
+	bool getRight(int i){// rwx rwx rwx |i: 987 654 321 | 自己 用户组 其他 
+		
+	}
 };
 extern inode INODE[BLOCKTOI * ISIZE+5];
 

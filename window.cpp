@@ -18,14 +18,9 @@ Window::Window(QWidget *parent) :
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
     ui->lt_users->horizontalHeader()->setStretchLastSection(true);
-<<<<<<< HEAD
     ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
-=======
-    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem(u8"用户名"));
-    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem(u8"状态"));
->>>>>>> 6ba9d17cc4697a387b612a590c0959c8f3777a01
     ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
@@ -194,14 +189,9 @@ void Window::initUserList(){
     ui->lt_users->clear();//clear包括表头
     ui->lt_users->setColumnCount(2);
     ui->lt_users->setRowCount(USER.size());
-<<<<<<< HEAD
     ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
-=======
-    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem(u8"用户名"));
-    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem(u8"状态"));
->>>>>>> 6ba9d17cc4697a387b612a590c0959c8f3777a01
     for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
         ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?u8"已登录":u8"未登录"));
