@@ -49,7 +49,7 @@ private:
     QString cd = "cd";//改变工作目录--------------------------------
     QString mkdir = "mkdir";//在当前目录下创建新目录，后接目录名--------
     QString rmdir = "rmdir";//在当前目录下删除目录，后接目录名----------
-    QString ls = "ls";//列出目录的内容，后接目录名
+    QString ls = "ls";//列出目录的内容，后接目录名---------------------
     QString find = "find";//搜索文件，后接文件名
     QString rm = "rm";//删除文件，后接文件名 rm test.txt--------------
     QString cat = "cat";//显示文件内容，后接文件名 cat test.txt--------

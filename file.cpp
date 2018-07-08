@@ -9,6 +9,7 @@ filsys sblock;//超级块，负责inode和数据块的分配回收
 vector<user> USER;//保存所有用户信息
 dir* ROOT;//根目录
 dir* HOME;// Root\Home\用户目录
+int UID;
 
 dir* newDir(string s) {
 	dir* p = new dir(s);
@@ -32,6 +33,7 @@ void filsys::init() {
 	}
 	ROOT = newDir("root");
 	HOME = ROOT->addDir("home");
+	UID = 100;
 }
 void filsys::i_setFree() {
 	for (int i = 1; i < isize; i++) {
@@ -118,4 +120,56 @@ int filsys::d_put(int di) {
 	}
 	B_FLAG[di] = false;
 	return 0;
+}
+
+
+int Users::findUser(string n) {
+	for (int i = 0; i < USER.size(); i++) {
+		if (USER[i].name == n)
+			return i;
+	}
+	return -1;
+}
+bool Users::addUser(string n, string pas) {
+	if (findUser(n) != -1) {
+		cerr << "用户名冲突" << endl;
+		return false;
+	}
+	user *p = new user;
+	p->name = n;
+	p->password = pas;
+	p->status = 0;
+	p->uid = UID;
+	UID++;
+
+	HOME->addDir(n);
+	USER.push_back(*p);
+	return true;
+}
+int Users::loginIn(string n, string pas) {
+	int x = findUser(n);
+	if (x == -1) {
+		cerr << "用户不存在" << endl;
+		return -1;
+	}
+	else if (USER[x].status == 1) {
+		cerr << "用户已登录" << endl;
+		return 0;
+	}
+	else if (USER[x].password != pas) {
+		cerr << "密码错误" << endl;
+		return -2;
+	}
+	else {//成功
+		USER[x].status = 1;
+		return 1;
+	}
+}
+void Users::loginOut(string n) {
+	int x = findUser(n);
+	USER[x].status = 0;
+}
+int Users::getUid(string n) {
+	int p = findUser(n);
+	return USER[p].uid;
 }
