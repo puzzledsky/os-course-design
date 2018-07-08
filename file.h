@@ -57,14 +57,34 @@ public:
 		}
 		if (p == -1) {
 			for (int i = 0; i < MSIZE; i++) {
-				if (flag[i] == 0) {
+				if (flag[i] == false) {
 					p = i;
 					break;
 				}
 			}
 		}
+		if (p == -1) {
+			cerr << "内存已满" << endl;
+			return;
+		}
+		num[p] = x;
+		flag[p] = true;
 	}
-	void pop(int x);
+	void pop(int x) {
+		for (int i = 0; i < MSIZE; i++) {
+			if (num[i] == x && flag[i] == 1) {
+				flag[i] = 0;
+				break;
+			}
+		}
+	}
+	void print() {
+		for (int i = 0; i < MSIZE; i++) {
+			if (num[i] || flag[i])
+				cout << num[i] << "  " << flag[i] << endl;
+		}
+		cout << endl;
+	}
 };
 extern memory REM;
 
@@ -224,8 +244,8 @@ public:
 
 
 	dir* addDir(string s) {//s:目录名
-		dir* f = getParent();
-		if (f && f->find(s) != -1) {
+		
+		if (this->find(s) != -1) {
 			cerr << "命名冲突" << endl;
 			return NULL;
 		}
