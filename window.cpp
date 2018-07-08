@@ -14,13 +14,18 @@ Window::Window(QWidget *parent) :
 
     //ui配置
     ui->tableWidget->setRowCount(SIZE/16+1);
-
+    ui->tableWidget_2->setRowCount(MSIZE/10);
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
     ui->lt_users->horizontalHeader()->setStretchLastSection(true);
+<<<<<<< HEAD
     ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
+=======
+    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem(u8"用户名"));
+    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem(u8"状态"));
+>>>>>>> 6ba9d17cc4697a387b612a590c0959c8f3777a01
     ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
@@ -32,7 +37,7 @@ Window::Window(QWidget *parent) :
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     if(!timer.isActive())
         timer.start();
-    qDebug()<<"主界面构造完毕";
+    qDebug()<<u8"主界面构造完毕";
 
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
@@ -149,10 +154,11 @@ void Window::update(){
     blockPrint();
     initUserList();
     inodePrint();
+    memoryPrint();
 }
 
 void Window::logInfo(QString s){
-   cout<<" "<<s.toStdString()<<endl;
+    ui->Logs->setText(s);
 }
 
 void Window::setGrid(QTableWidget* widget,int x,int y,QColor c){
@@ -168,16 +174,16 @@ void Window::blockPrint(){
     int i=1;
     while (i<ISIZE) {
         if(B_FLAG[i])
-            setGrid(w,(i+2)/16,(i+2)%16,Qt::yellow);
+            setGrid(w,(i+1)/16,(i+1)%16,Qt::yellow);
         else
-            setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
+            setGrid(w,(i+1)/16,(i+1)%16,Qt::white);
         i++;
     }
     while (i<SIZE) {
         if(B_FLAG[i])
-             setGrid(w,(i+2)/16,(i+2)%16,Qt::green);
+             setGrid(w,(i+1)/16,(i+1)%16,Qt::green);
         else
-            setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
+            setGrid(w,(i+1)/16,(i+1)%16,Qt::white);
 
         i++;
     }
@@ -188,12 +194,17 @@ void Window::initUserList(){
     ui->lt_users->clear();//clear包括表头
     ui->lt_users->setColumnCount(2);
     ui->lt_users->setRowCount(USER.size());
+<<<<<<< HEAD
     ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
+=======
+    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem(u8"用户名"));
+    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem(u8"状态"));
+>>>>>>> 6ba9d17cc4697a387b612a590c0959c8f3777a01
     for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
-        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?"已登录":"未登录"));
+        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?u8"已登录":u8"未登录"));
     }
 }
 
@@ -212,11 +223,77 @@ void Window::inodePrint(){
 
 }
 
+void Window::memoryPrint(){
+    int i=0;
+    QTableWidget *w=ui->tableWidget_2;
+    while (i<MSIZE) {
+        if(REM.num[i]==0)
+            setGrid(w,i/10,i%10,Qt::white);
+        else if(REM.flag[i]==0)
+            setGrid(w,i/10,i%10,Qt::gray);
+        else if(REM.flag[i]==1)
+            setGrid(w,i/10,i%10,Qt::green);
+        i++;
+    }
+}
+
 void Window::on_tableWidget_cellClicked(int row, int column)
 {
-    cout<<row<<" "<<column<<endl;
     int num=16*row+column;
-    num-=2;
-    cout<<num<<endl;
-    logInfo(QString::fromStdString(BLOCK[num].data));
+    QString s=u8"";
+    if(num==0){
+        s.append(u8"系统引导块\n");
+        logInfo(s);
+        return;
+    }
+    else if(num==1){
+        s.append(u8"超级块\n");
+        logInfo(s);
+        return;
+    }
+    num-=1;
+    s.append(QString::number(num)+"\n");
+    if(num<=ISIZE){
+        s.append(u8"inode范围:\n");
+        s.append(QString::number(16*(num-1)+1));
+        s.append(u8" - ");
+        s.append(QString::number(16*(num-1)+16));
+        s.append(u8"\n已使用inode信息:\n");
+        for(int i=1;i<=BLOCKTOI;i++){
+            int x=16*(num-1)+i;
+            if(INODE[x].status==1){
+                s.append(QString::number(x));
+                s.append(u8"\n");
+            }
+        }
+        logInfo(s);
+        return;
+    }
+    s.append(QString::fromStdString(BLOCK[num].data)+"\n");
+    logInfo(s);
+}
+
+void Window::on_tableWidget_3_cellClicked(int row, int column)
+{
+    int n=16*row+column;
+    QString s=u8"";
+    s.append(QString::number(n));
+    s.append((INODE[n].type==1)?u8"\n文件":u8"\n目录");
+    s.append(u8"\naddr[]信息:\n");
+    for(int i=0;i<8;i++){
+        if(INODE[n].addr[i]!=-1){
+            s.append(QString::number(i)+u8"  "+QString::number(INODE[n].addr[i])+"\n");
+        }
+    }
+    logInfo(s);
+}
+
+void Window::on_tableWidget_2_cellClicked(int row, int column)
+{
+    int n=10*row+column;
+    QString s=u8"";
+    s.append(QString::number(n)+"\n");
+    s.append(u8"inode信息:\n");
+    s.append(QString::number(REM.num[n])+"\n");
+    logInfo(s);
 }

@@ -9,20 +9,21 @@
 #include<set>
 
 using namespace std;
-const int SIZE = 210;//总块数
+const int SIZE = 310;//总块数
 const int ISIZE = 10;//保存inode的块数
-const int DSIZE = 200;//保存数据的块数
-const int MSIZE = 100;
+const int DSIZE = 300;//保存数据的块数
+const int MSIZE = 200;
 const int BLOCKSIZE = 8;//一块的字节大小
-const int BLOCKTOI = 2;//一块保存inode数量
+const int BLOCKTOI = 16;//一块保存inode数量
 
 /*
-文件权限问题
-内存问题
+文件权限问题 用户组
+内存显示
 目录文件的保存 inode的保存
-用户组
 空闲表的显示
 文件不存在 读写问题
+用户登出时 login out
+父目录和子目录同名
 */
 
 class dir;
@@ -34,8 +35,8 @@ class block {
 public:
 	string data = "";//大小为512
 };
-extern bool B_FLAG[SIZE];//是否已使用
-extern block BLOCK[SIZE];
+extern bool B_FLAG[SIZE+5];//是否已使用
+extern block BLOCK[SIZE+5];
 
 class memory {
 public:
@@ -48,6 +49,13 @@ public:
 			num[i] = 0;
 	}
 	void push(int x) {
+		for (int i = 0; i < MSIZE; i++) {
+			if (num[i] == x) {
+				flag[i] = 1;
+				return;
+			}
+		}
+
 		int p = -1;
 		for (int i = 0; i < MSIZE; i++) {
 			if (num[i] == 0) {
@@ -144,11 +152,15 @@ public:
 	int status; //状态，是否被分配
 	int right; //权限，   
 	int addr[8]; //直接参照
+	int nwrite; //是否正在被写
+	int nread; //正在被读的数量
 	dir *pdir;
 
 	inode() {
 		size = 0;
 		status = 0;
+		nwrite = 0;
+		nread = 0;
 		for (int i = 0; i < 8; i++) {
 			addr[i] = -1;
 		}
@@ -183,16 +195,12 @@ public:
 	}
 
 };
-extern inode INODE[BLOCKTOI * ISIZE];
+extern inode INODE[BLOCKTOI * ISIZE+5];
 
 
 
 class dir {
 private:
-	int num[100];
-	string name[100];
-	int nsub;
-
     //获得空闲节点
 	int getFree() {
 		if (nsub == 100)
@@ -219,6 +227,7 @@ private:
 		return getDir(num[0]);
 	}
 	int find(string s) {//查找文件或者目录，返回在目录表中的下标
+		REM.push(num[1]);
 		for (int i = 0; i < nsub; i++) {
 			if (num[i] && name[i] == s) {
 				return i;
@@ -226,8 +235,12 @@ private:
 		}
 		return -1;
 	}
-    	
+   
 public:
+	int num[100];
+	string name[100];
+	int nsub;
+
 	dir(string s) {
 		nsub = 2;
 		name[0] = "NULL";
@@ -241,8 +254,6 @@ public:
 	
 
     //在当前目录下添加目录x
-
-
 	dir* addDir(string s) {//s:目录名
 		
 		if (this->find(s) != -1) {
@@ -301,22 +312,27 @@ public:
 	}
 	dir* in(string s) {//进入子目录，失败时留在当前目录
 		int p = find(s);
-		if (p != -1 && INODE[num[p]].type == 2)
+		if (p != -1 && INODE[num[p]].type == 2) {
+			REM.push(num[p]);
 			return INODE[num[p]].pdir;
+		}
 		return this;
 	}
 	dir* out() {//返回上一级目录，失败时留在当前目录
 		if (num[0] == 0)
 			return this;
+		REM.pop(num[0]);
 		return INODE[num[0]].pdir;
 	}
 	
 	
 	int findFile(string s) {//根据文件名找文件，没找到则返回-1
-		int p = find(s);
-		if (INODE[num[p]].type != 1) {
+		int p = find(s);     
+        if (p!=-1 && INODE[num[p]].type != 1) {
 			p = -1;
 		}
+		if (p != -1)
+			REM.push(num[p]);
 		return p;
 	}
 	inode* getFile(string s) {//在当前目录查找指定文件，返回inode，失败时返回NULL
@@ -335,6 +351,41 @@ public:
 		num[p] = di;
 		return true;
 	}
+	
+	/*权限还没写*/
+	// ->openFile("1.txt","user",1)
+	int openFile(string s, string user,int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+		int p = findFile(s);	                    //method 1：读  2：写
+        cout<<"p--index:"<<p<<endl;
+        if (p == -1)
+			return -1;
+		//return -2;
+		if (INODE[num[p]].nwrite == 1)
+			return 0;
+		if (method == 1) {
+			INODE[num[p]].nread++;
+			return 1;
+		}
+		if (method == 2 && INODE[num[p]].nread==0) {
+			INODE[num[p]].nwrite = 1;
+			return 1;
+		}
+		return 0;
+	}
+	//->closeFile("1.txt",1)
+	void closeFlie(string s,int method) {//method 1：读  2：写
+		int p = findFile(s);            
+		if (p == -1)
+			return;
+		if (method == 1) {
+			if(INODE[num[p]].nread>0)
+				INODE[num[p]].nread--;
+		}
+		if (method == 2) {
+			INODE[num[p]].nwrite = 0;
+		}
+	}
+	
 	bool removeFile(string s) {//s：文件名，删除文件
 		int p = findFile(s);
 		if (p == -1)
@@ -358,6 +409,7 @@ public:
 		int p = findFile(s);
 		INODE[num[p]].setData(str);
 	}
+
     string getName(){
         return name[1];
     }

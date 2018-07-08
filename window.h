@@ -45,10 +45,18 @@ private slots:
     void initUserList();
 
     void inodePrint();
+<<<<<<< HEAD
 
+=======
+    void memoryPrint();
+>>>>>>> 6ba9d17cc4697a387b612a590c0959c8f3777a01
     void on_tableWidget_cellClicked(int row, int column);
 
     void logInfo(QString s); //信息显示，暂时是控制台输出
+
+    void on_tableWidget_3_cellClicked(int row, int column);
+
+    void on_tableWidget_2_cellClicked(int row, int column);
 
 private:
     Ui::Window *ui;

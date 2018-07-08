@@ -1,11 +1,11 @@
 ﻿#include"file.h"
 /*全局变量*/
 
-bool B_FLAG[SIZE];//磁盘块是否被使用
-block BLOCK[SIZE];//磁盘块
-inode INODE[BLOCKTOI * ISIZE];//磁盘中INODE区域
-filsys sblock;//超级块，负责inode和数据块的分配回收
+bool B_FLAG[SIZE+5];//磁盘块是否被使用
+block BLOCK[SIZE+5];//磁盘块
+inode INODE[BLOCKTOI * ISIZE+5];//磁盘中INODE区域
 memory REM;//内存块
+filsys sblock;//超级块，负责inode和数据块的分配回收
 vector<user> USER;//保存所有用户信息
 dir* ROOT;//根目录
 dir* HOME;// Root\Home\用户目录
@@ -65,6 +65,7 @@ int filsys::i_get() {
 	if (!B_FLAG[p]) {
 		B_FLAG[p] = true;
 	}
+	REM.push(di);
 	INODE[di].status = 1;
 	INODE[di].addr[0] = d_get();
 	return di;
@@ -87,6 +88,7 @@ int filsys::i_put(int di) {
 		ifree[ninode] = di;
 		ninode++;
 	}
+	REM.pop(di);
 	INODE[di].status = 0;
 	for (int i = 0; i < 8; i++) {
 		if (INODE[di].addr[i] != -1) {
