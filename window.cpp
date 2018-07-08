@@ -23,7 +23,6 @@ Window::Window(QWidget *parent) :
 
 
 
-
     //刷新
     timer.setInterval(500);
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
