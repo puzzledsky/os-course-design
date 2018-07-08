@@ -9,10 +9,10 @@
 #include<set>
 
 using namespace std;
-const int SIZE = 210;//总块数
+const int SIZE = 310;//总块数
 const int ISIZE = 10;//保存inode的块数
-const int DSIZE = 200;//保存数据的块数
-const int MSIZE = 4;
+const int DSIZE = 300;//保存数据的块数
+const int MSIZE = 200;
 const int BLOCKSIZE = 8;//一块的字节大小
 const int BLOCKTOI = 2;//一块保存inode数量
 

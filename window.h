@@ -47,6 +47,7 @@ private slots:
 
 
     void inodePrint();
+    void memoryPrint();
     void on_tableWidget_cellClicked(int row, int column);
     void logInfo(QString s); //信息显示，暂时是控制台输出
 

@@ -14,12 +14,12 @@ Window::Window(QWidget *parent) :
 
     //ui配置
     ui->tableWidget->setRowCount(SIZE/16+1);
-
+    ui->tableWidget_2->setRowCount(MSIZE/10);
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
     ui->lt_users->horizontalHeader()->setStretchLastSection(true);
-    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
-    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem(u8"用户名"));
+    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem(u8"状态"));
     ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
@@ -31,7 +31,7 @@ Window::Window(QWidget *parent) :
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     if(!timer.isActive())
         timer.start();
-    qDebug()<<"主界面构造完毕";
+    qDebug()<<u8"主界面构造完毕";
 
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
@@ -111,6 +111,7 @@ void Window::update(){
     blockPrint();
     initUserList();
     inodePrint();
+    memoryPrint();
 }
 
 void Window::logInfo(QString s){
@@ -150,11 +151,11 @@ void Window::initUserList(){
     ui->lt_users->clear();//clear包括表头
     ui->lt_users->setColumnCount(2);
     ui->lt_users->setRowCount(USER.size());
-    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
-    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem(u8"用户名"));
+    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem(u8"状态"));
     for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
-        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?"已登录":"未登录"));
+        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?u8"已登录":u8"未登录"));
     }
 }
 
@@ -171,6 +172,13 @@ void Window::inodePrint(){
          i++;
      }
 
+}
+
+void Window::memoryPrint(){
+    int i=0;
+    while (i<MSIZE) {
+        i++;
+    }
 }
 
 void Window::on_tableWidget_cellClicked(int row, int column)
