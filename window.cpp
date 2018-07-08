@@ -131,16 +131,16 @@ void Window::blockPrint(){
     int i=1;
     while (i<ISIZE) {
         if(B_FLAG[i])
-            setGrid(w,(i+2)/16,(i+2)%16,Qt::yellow);
+            setGrid(w,(i+1)/16,(i+1)%16,Qt::yellow);
         else
-            setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
+            setGrid(w,(i+1)/16,(i+1)%16,Qt::white);
         i++;
     }
     while (i<SIZE) {
         if(B_FLAG[i])
-             setGrid(w,(i+2)/16,(i+2)%16,Qt::green);
+             setGrid(w,(i+1)/16,(i+1)%16,Qt::green);
         else
-            setGrid(w,(i+2)/16,(i+2)%16,Qt::white);
+            setGrid(w,(i+1)/16,(i+1)%16,Qt::white);
 
         i++;
     }
@@ -190,7 +190,6 @@ void Window::memoryPrint(){
 
 void Window::on_tableWidget_cellClicked(int row, int column)
 {
-    cout<<row<<" "<<column<<endl;
     int num=16*row+column;
     QString s=u8"";
     if(num==0){
@@ -204,23 +203,48 @@ void Window::on_tableWidget_cellClicked(int row, int column)
         return;
     }
     num-=1;
-    int temp;
-    if(num<ISIZE){
-        s.append(u8"inode范围:");
-        temp=16*(num-1)+1;
-        s.append(QString(temp));
+    s.append(QString::number(num)+"\n");
+    if(num<=ISIZE){
+        s.append(u8"inode范围:\n");
+        s.append(QString::number(16*(num-1)+1));
         s.append(u8" - ");
-        s.append(16*(num-1)+15);
-        s.append("\n已使用inode信息:\n");
+        s.append(QString::number(16*(num-1)+16));
+        s.append(u8"\n已使用inode信息:\n");
         for(int i=1;i<=BLOCKTOI;i++){
             int x=16*(num-1)+i;
             if(INODE[x].status==1){
-                s.append(i);
+                s.append(QString::number(x));
                 s.append(u8"\n");
             }
         }
         logInfo(s);
         return;
     }
-    logInfo(QString::fromStdString(BLOCK[num].data));
+    s.append(QString::fromStdString(BLOCK[num].data)+"\n");
+    logInfo(s);
+}
+
+void Window::on_tableWidget_3_cellClicked(int row, int column)
+{
+    int n=16*row+column;
+    QString s=u8"";
+    s.append(QString::number(n));
+    s.append((INODE[n].type==1)?u8"\n文件":u8"\n目录");
+    s.append(u8"\naddr[]信息:\n");
+    for(int i=0;i<8;i++){
+        if(INODE[n].addr[i]!=-1){
+            s.append(QString::number(i)+u8"  "+QString::number(INODE[n].addr[i])+"\n");
+        }
+    }
+    logInfo(s);
+}
+
+void Window::on_tableWidget_2_cellClicked(int row, int column)
+{
+    int n=10*row+column;
+    QString s=u8"";
+    s.append(QString::number(n)+"\n");
+    s.append(u8"inode信息:\n");
+    s.append(QString::number(REM.num[n])+"\n");
+    logInfo(s);
 }

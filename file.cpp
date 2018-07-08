@@ -1,9 +1,9 @@
 ﻿#include"file.h"
 /*全局变量*/
 
-bool B_FLAG[SIZE];//磁盘块是否被使用
-block BLOCK[SIZE];//磁盘块
-inode INODE[BLOCKTOI * ISIZE];//磁盘中INODE区域
+bool B_FLAG[SIZE+5];//磁盘块是否被使用
+block BLOCK[SIZE+5];//磁盘块
+inode INODE[BLOCKTOI * ISIZE+5];//磁盘中INODE区域
 filsys sblock;//超级块，负责inode和数据块的分配回收
 memory REM;//内存块
 vector<user> USER;//保存所有用户信息
