@@ -39,14 +39,52 @@ extern block BLOCK[SIZE];
 
 class memory {
 public:
-	int inode[MSIZE];
-	bool flag[MSIZE];
+	int num[MSIZE];
+	bool flag[MSIZE];//正在被使用
 	memory() {
 		for (int i = 0; i < MSIZE; i++)
 			flag[i] = false;
+		for (int i = 0; i < MSIZE; i++)
+			num[i] = 0;
 	}
-	void push(int x);
-	void pop(int x);
+	void push(int x) {
+		int p = -1;
+		for (int i = 0; i < MSIZE; i++) {
+			if (num[i] == 0) {
+				p = i;
+				break;
+			}
+		}
+		if (p == -1) {
+			for (int i = 0; i < MSIZE; i++) {
+				if (flag[i] == false) {
+					p = i;
+					break;
+				}
+			}
+		}
+		if (p == -1) {
+			cerr << "内存已满" << endl;
+			return;
+		}
+		num[p] = x;
+		flag[p] = true;
+	}
+	void pop(int x) {
+		for (int i = 0; i < MSIZE; i++) {
+			if (num[i] == x && flag[i] == 1) {
+				flag[i] = 0;
+				break;
+			}
+		}
+	}
+	void print() {
+		for (int i = 0; i < MSIZE; i++) {
+			if (num[i] || flag[i])
+				cout << num[i] << "  " << flag[i] << endl;
+		}
+		cout << endl;
+	}
 };
 extern memory REM;
 
@@ -188,7 +226,7 @@ private:
 		}
 		return -1;
 	}
-	
+    	
 public:
 	dir(string s) {
 		nsub = 2;
@@ -201,13 +239,18 @@ public:
 		INODE[di].type = 2;
 	}
 	
+
+    //在当前目录下添加目录x
+
+
 	dir* addDir(string s) {//s:目录名
-		dir* f = getParent();
-		if (f && f->find(s) != -1) {
+		
+		if (this->find(s) != -1) {
 			cerr << "命名冲突" << endl;
 			return NULL;
 		}
 		dir* x = newDir(s);
+
 		int p = getFree();
 		name[p] = x->name[1];
 		num[p] = x->num[1];
@@ -268,7 +311,8 @@ public:
 		return INODE[num[0]].pdir;
 	}
 	
-	int findFile(string s) {
+	
+	int findFile(string s) {//根据文件名找文件，没找到则返回-1
 		int p = find(s);
 		if (INODE[num[p]].type != 1) {
 			p = -1;
