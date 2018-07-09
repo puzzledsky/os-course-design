@@ -14,10 +14,10 @@ SubForm::SubForm(QWidget *parent, QString string) :
     name = string;
     ui->textEdit->setFocus();
     ui->textEdit->installEventFilter(this);
-
     ui->textEdit->setTextColor(QColor(255,0,255));
     ui->textEdit->append(name + " /" + name + "\n$ ");
     ui->textEdit->setTextColor(QColor(0,0,0));
+    this->setWindowTitle(name);
 }
 
 void SubForm::setName(QString string)
@@ -238,6 +238,11 @@ void SubForm::getFun()
                 outputerror("File not exit!");
                 return;
             }else if(b == -2){
+                if(THIS->getUser(ss.toStdString()) == name.toStdString()){
+                    THIS->setRight(ss.toStdString(),a);
+                    outputerror("Property modify success!");
+                    return;
+                }
                 outputerror("You have no property!");
                 return;
             }else if(b == 0){
