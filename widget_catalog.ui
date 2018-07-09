@@ -18,30 +18,15 @@
     <rect>
      <x>20</x>
      <y>70</y>
-     <width>161</width>
+     <width>171</width>
      <height>401</height>
     </rect>
    </property>
    <column>
     <property name="text">
-     <string>root</string>
+     <string>目录</string>
     </property>
    </column>
-   <item>
-    <property name="text">
-     <string>bin</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>usr</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>dev</string>
-    </property>
-   </item>
   </widget>
   <widget class="QTableWidget" name="table_file">
    <property name="geometry">
@@ -139,6 +124,19 @@ border-image: url(:/arrow/arrow_right_bluet.ico);</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>171</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>查看目录</string>
    </property>
   </widget>
  </widget>
