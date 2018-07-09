@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>913</width>
-    <height>576</height>
+    <width>904</width>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,14 +16,14 @@
   <widget class="QTableWidget" name="lt_users">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>40</y>
-     <width>241</width>
-     <height>231</height>
+     <x>210</x>
+     <y>80</y>
+     <width>263</width>
+     <height>191</height>
     </rect>
    </property>
    <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
+    <enum>Qt::ScrollBarAlwaysOn</enum>
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -31,17 +31,20 @@
    <property name="sizeAdjustPolicy">
     <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
    </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
    <property name="selectionMode">
     <enum>QAbstractItemView::NoSelection</enum>
    </property>
    <property name="rowCount">
-    <number>3</number>
+    <number>4</number>
    </property>
    <property name="columnCount">
     <number>4</number>
    </property>
    <attribute name="horizontalHeaderVisible">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <attribute name="horizontalHeaderDefaultSectionSize">
     <number>60</number>
@@ -61,6 +64,7 @@
    <attribute name="verticalHeaderMinimumSectionSize">
     <number>12</number>
    </attribute>
+   <row/>
    <row/>
    <row/>
    <row/>
@@ -754,7 +758,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>40</y>
+     <y>80</y>
      <width>121</width>
      <height>131</height>
     </rect>
