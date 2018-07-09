@@ -17,10 +17,10 @@ Window::Window(QWidget *parent) :
     ui->tableWidget_2->setRowCount(MSIZE/10);
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
-    ui->lt_users->horizontalHeader()->setStretchLastSection(true);
-    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
-    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
-    ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
+   // ui->lt_users->horizontalHeader()->setStretchLastSection(true);
+    //ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
+    //ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
     ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
@@ -35,7 +35,7 @@ Window::Window(QWidget *parent) :
     qDebug()<<u8"主界面构造完毕";
 
     //ui->tableWidget->setStyleSheet("selection-background-color:");
-    ui->tableWidget_3->setRowCount(ISIZE);
+
 
     test();
     //刷新一次
@@ -186,15 +186,17 @@ void Window::blockPrint(){
 }
 
 void Window::initUserList(){
-    ui->lt_users->clear();//clear包括表头
-    ui->lt_users->setColumnCount(2);
-    ui->lt_users->setRowCount(USER.size());
-    ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
-    ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
-    ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
+    //ui->lt_users->clear();//clear包括表头
+    //ui->lt_users->setColumnCount(2);
+    //ui->lt_users->setRowCount(USER.size());
+    //ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
+    //ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
+    //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
     for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
         ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?u8"已登录":u8"未登录"));
+        ui->lt_users->setItem(i,2,new QTableWidgetItem(QString::number(USER[i].uid)));
+        ui->lt_users->setItem(i,3,new QTableWidgetItem(QString::number(USER[i].gid)));
     }
 }
 

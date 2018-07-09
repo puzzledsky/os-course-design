@@ -45,7 +45,7 @@ public:
 	static void loginOut(string n);
 	static int getUid(string n);
 	static bool removeUser(string n);
-	static void setGroup(string user,string group);//group格式： group0,group1,... 默认都在group0
+    static void setGroup(string user,string group="group0");//group格式： group0,group1,... 默认都在group0
 	static int getGid(string n);
 };
 extern dir* newDir(string s);
