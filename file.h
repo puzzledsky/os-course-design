@@ -180,6 +180,9 @@ public:
 		status = 0;
 		nwrite = 0;
 		nread = 0;
+		right = 777;
+		uid = 0;
+		gid = 0;
 		for (int i = 0; i < 8; i++) {
 			addr[i] = -1;
 		}
@@ -409,6 +412,12 @@ public:
 			return;
 		INODE[num[p]].setRight(right);
 	}
+	int getRight(string s, int right) {//返回0时查找失败
+		int p = find(s);
+		if (p == -1)
+			return 0;
+		return INODE[num[p]].right;
+	}
 	/*权限还没写*/
 	// ->openFile("1.txt","user",1)
 	int openFile(string s, string user,int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
@@ -485,6 +494,12 @@ extern vector<user> USER;
 extern dir* ROOT;
 extern dir* HOME;
 
+class group {
+
+};
+class Groups {
+
+};
 
 class print {
 public:
