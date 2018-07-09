@@ -38,6 +38,7 @@ private:
     dir *THIS;
     dir *USER;
     QString newfile; //新建文档的内容存储在字符串中
+    QString filename;
     bool isEdit;//是否处在编辑状态
     bool endEdit;//完成编辑
     Ui::SubForm *ui;
