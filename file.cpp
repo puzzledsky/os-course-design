@@ -189,7 +189,13 @@ int Users::getGid(string n) {
 		return 0;
 	return USER[p].gid;
 }
-
+string Users::getName(int uid) {
+	for (int i = 0; i < USER.size(); i++) {
+		if (USER[i].uid == uid)
+			return USER[i].name;
+	}
+	return "";
+}
 /*dir定义*/
 //private
 int dir::getFree() {
@@ -212,9 +218,9 @@ dir* dir::getDir(int n) {
 dir* dir::getParent() {
 	return getDir(num[0]);
 }
-int dir::find(string s) {//查找文件或者目录，返回在目录表中的下标
+int dir::find(string s,int start) {//查找文件或者目录，返回在目录表中的下标
 	REM.push(num[1]);
-	for (int i = 0; i < nsub; i++) {
+	for (int i = start; i < nsub; i++) {
 		if (num[i] && name[i] == s) {
 			return i;
 		}
@@ -281,6 +287,7 @@ void dir::remove() {//删除目录自己，包括子目录和文件
 		dir *p = getParent();
 		int x = p->find(name[1]);
 		p->num[x] = 0;
+		p->update();
 	}
 	sblock.i_put(num[1]);
 
@@ -294,10 +301,14 @@ bool dir::rename(string s) {//目录重命名
 	if (x1 == -1) {
 		int x = p->find(name[1]);
 		name[1] = s;
+		update();
 		p->name[x] = s;
+		p->update();
 		for (int i = 2; i < nsub; i++) {
 			if (num[i]) {
-				getDir(num[i])->name[0] = s;
+				dir* x = getDir(num[i]);
+				x->name[0] = s;
+				x->update();
 			}
 		}
 		return true;
@@ -340,13 +351,16 @@ inode* dir::getFile(string s) {//在当前目录查找指定文件，返回inode
 	return &INODE[p];
 }
 bool dir::addFile(string s) {//s：文件名，添加文件
-	if (find(s) != -1)// 命名冲突
+    int x=find(s,2);
+    if (x!= -1){// 命名冲突判断
 		return false;
+    }
 	int di = sblock.i_get();
 	INODE[di].toFile();
 	int p = getFree();
 	name[p] = s;
 	num[p] = di;
+	update();
 	return true;
 }
 void dir::setUser(string s, string user) {
@@ -357,6 +371,12 @@ void dir::setUser(string s, string user) {
 	int gid = Users::getGid(user);
 	INODE[num[p]].uid = uid;
 	INODE[num[p]].gid = gid;
+}
+string dir::getUser(string s) {
+	int p = find(s);
+	if (p == -1)
+		return "";
+	return Users::getName(USER[num[p]].uid);
 }
 void dir::setRight(string s, int right) {
 	int p = find(s);
@@ -407,6 +427,7 @@ bool dir::removeFile(string s) {//s：文件名，删除文件
 		return false;
 	sblock.i_put(num[p]);
 	num[p] = 0;
+	update();
 	return true;
 }
 bool dir::renameFile(string s, string name1) {//s:文件名，name1：新文件名， 文件重命名
@@ -415,6 +436,7 @@ bool dir::renameFile(string s, string name1) {//s:文件名，name1：新文件�
 	if (p1 != -1)
 		return false;
 	name[p] = name1;
+	update();
 }
 string dir::readFile(string s) {//  返回文件全部内容
 	int p = findFile(s);

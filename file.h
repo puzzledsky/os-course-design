@@ -13,7 +13,7 @@ const int SIZE = 310;//总块数
 const int ISIZE = 14;//保存inode的块数
 const int DSIZE = 300;//保存数据的块数
 const int MSIZE = 200;
-const int BLOCKSIZE = 8;//一块的字节大小
+const int BLOCKSIZE = 128;//一块的字节大小
 const int BLOCKTOI = 16;//一块保存inode数量
 /*
 Users::addUser("1", "abc");
@@ -31,6 +31,7 @@ Users::loginOut("1");
 ---------------------用户登出时 login out
 父目录和子目录同名
 更新时间 
+文件名 数字1
 */
 
 class inode;
@@ -41,7 +42,7 @@ private:
 	int getFree();//获得空闲节点    
 	static dir* getDir(int n);//inode号为n对应的目录
 	dir* getParent();//返回父亲节点指针
-	int find(string s);
+	int find(string s, int start=0);
 	bool haveRight(string user, string name, int method);
 	void update();
 public:
@@ -62,6 +63,7 @@ public:
 	inode* getFile(string s);
 	bool addFile(string s);
 	void setUser(string s, string user);
+	string getUser(string s);
 	void setRight(string s, int right);
 	int getRight(string s);
 	int openFile(string s, string user, int method);
@@ -84,6 +86,7 @@ public:
 	static bool removeUser(string n);
     static void setGroup(string user,string group="group0");//group格式： group0,group1,... 默认都在group0
 	static int getGid(string n);
+	static string getName(int uid);
 };
 extern dir* newDir(string s);
 
@@ -153,18 +156,17 @@ public:
 extern memory REM;
 
 class filsys {//超级块
-private:
-	int IFULL = 100;
-	int DFULL = 100;
-
-	int isize;  //inode区总块数
-	int dsize;  //存储区总块数
-	int ifree[100];  //inode空闲队列
-	int dfree[100];  //存储区空闲队列
-	int ninode;  //inode空闲队列长度
-	int ndata;  //存储区空闲队列长度
 public:
-	filsys();
+    int IFULL = 100;
+    int DFULL = 100;
+    int isize;  //inode区总块数
+    int dsize;  //存储区总块数
+    int ifree[100];  //inode空闲队列
+    int dfree[100];  //存储区空闲队列
+    int ninode;  //inode空闲队列长度
+    int ndata;  //存储区空闲队列长度
+
+    filsys();
 	void init();
 	void i_setFree();
 	void d_setFree();
@@ -203,7 +205,7 @@ private:
 		}
 	}
 public:
-	int type;  //1:文件 2：目录
+    int type;  //1:文件 2：目录  -1：未知
 	int size;  //文件大小，字节
 	int status; //状态，是否被分配
 	int right; //权限   
