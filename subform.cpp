@@ -200,7 +200,30 @@ void SubForm::getFun()
             }
         }
     }else if(mlings.at(mling) == chmod){
-
+        QString s = mlings.at(1);
+        int a = s.toInt();
+        QString ss = mlings.at(2);
+        if(a == 123 || a == 456 || a == 789){
+            int b = THIS->openFile(ss.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+            if(b == -1){
+                outputerror("File not exit!");
+                return;
+            }else if(b == -2){
+                outputerror("You have no property!");
+                return;
+            }else if(b == 0){
+                outputerror("The file is in use!");
+                return;
+            }else{
+                THIS->setRight(ss.toStdString(),a);
+                outputerror("Property modify success!");
+                return;
+            }
+            THIS->closeFlie(ss.toStdString(),2);
+        }else{
+            outputerror("quanxian error!");
+            return;
+        }
     }else if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
 
         if(mlings[mling] == vi){//创建新文件
