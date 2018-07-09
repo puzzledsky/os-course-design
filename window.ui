@@ -6,9 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>913</width>
-    <height>576</height>
+    <width>904</width>
+    <height>574</height>
    </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
    <string>Window</string>
@@ -16,14 +19,14 @@
   <widget class="QTableWidget" name="lt_users">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>40</y>
-     <width>241</width>
-     <height>231</height>
+     <x>210</x>
+     <y>80</y>
+     <width>263</width>
+     <height>191</height>
     </rect>
    </property>
    <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
+    <enum>Qt::ScrollBarAlwaysOn</enum>
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -31,17 +34,20 @@
    <property name="sizeAdjustPolicy">
     <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
    </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
    <property name="selectionMode">
     <enum>QAbstractItemView::NoSelection</enum>
    </property>
    <property name="rowCount">
-    <number>3</number>
+    <number>4</number>
    </property>
    <property name="columnCount">
     <number>4</number>
    </property>
    <attribute name="horizontalHeaderVisible">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <attribute name="horizontalHeaderDefaultSectionSize">
     <number>60</number>
@@ -53,7 +59,7 @@
     <bool>false</bool>
    </attribute>
    <attribute name="verticalHeaderDefaultSectionSize">
-    <number>40</number>
+    <number>30</number>
    </attribute>
    <attribute name="verticalHeaderHighlightSections">
     <bool>false</bool>
@@ -61,6 +67,7 @@
    <attribute name="verticalHeaderMinimumSectionSize">
     <number>12</number>
    </attribute>
+   <row/>
    <row/>
    <row/>
    <row/>
@@ -357,7 +364,7 @@
   <widget class="QTableWidget" name="tableWidget_2">
    <property name="geometry">
     <rect>
-     <x>420</x>
+     <x>400</x>
      <y>360</y>
      <width>203</width>
      <height>181</height>
@@ -604,10 +611,10 @@
   <widget class="QTextEdit" name="Logs">
    <property name="geometry">
     <rect>
-     <x>670</x>
-     <y>360</y>
-     <width>201</width>
-     <height>181</height>
+     <x>630</x>
+     <y>300</y>
+     <width>231</width>
+     <height>241</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -635,79 +642,59 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>320</y>
-     <width>321</width>
-     <height>19</height>
+     <x>40</x>
+     <y>80</y>
+     <width>121</width>
+     <height>131</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label_12">
+     <widget class="QCommandLinkButton" name="cLB_Login">
       <property name="text">
-       <string>外存inode号分配情况</string>
+       <string>用户登录</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_19">
+     <widget class="QCommandLinkButton" name="cLB_adduser">
       <property name="text">
-       <string>已分配：</string>
+       <string>添加用户</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_22">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(170, 85, 255);</string>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
+     <widget class="QCommandLinkButton" name="cLB_openCatalog">
       <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_21">
-      <property name="text">
-       <string>未分配：</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_20">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(166, 166, 166);</string>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <property name="text">
-       <string/>
+       <string>目录查看</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>290</y>
+     <width>145</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>内存inode号分配情况</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>410</x>
      <y>320</y>
-     <width>321</width>
-     <height>19</height>
+     <width>171</width>
+     <height>16</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <item>
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>内存inode号分配情况</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QLabel" name="label_15">
       <property name="text">
@@ -750,34 +737,66 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QLabel" name="label_12">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>40</y>
-     <width>121</width>
-     <height>131</height>
+     <x>110</x>
+     <y>290</y>
+     <width>145</width>
+     <height>16</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="text">
+    <string>外存inode号分配情况</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>320</y>
+     <width>171</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QCommandLinkButton" name="cLB_Login">
+     <widget class="QLabel" name="label_19">
       <property name="text">
-       <string>用户登录</string>
+       <string>已分配：</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCommandLinkButton" name="cLB_adduser">
+     <widget class="QLabel" name="label_22">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(170, 85, 255);</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
       <property name="text">
-       <string>添加用户</string>
+       <string/>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCommandLinkButton" name="cLB_openCatalog">
+     <widget class="QLabel" name="label_21">
       <property name="text">
-       <string>目录查看</string>
+       <string>未分配：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_20">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(166, 166, 166);</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>

@@ -29,12 +29,16 @@ public:
 protected:
      bool eventFilter(QObject *obj, QEvent *event);
 
+private slots:
+     void on_textEdit_cursorPositionChanged();
+
 private:
 
     QString name;
     dir *THIS;
     dir *USER;
     QString newfile; //新建文档的内容存储在字符串中
+    QString filename;
     bool isEdit;//是否处在编辑状态
     bool endEdit;//完成编辑
     Ui::SubForm *ui;
@@ -54,6 +58,7 @@ private:
     QString wq = ":w q";//将文件写盘并退出vi--------------------------
     QString pwd = "pwd";//显示用户当前所在路径的全名--------------------
     QString usermod = "usermod";//将用户加入用户组和退出用户组usermod -g name groupname; uesrmod -r name groupname
+    QString groups = "groups";
     QString chmod  = "chmod";//修改文件权限--------------------------
 
 };

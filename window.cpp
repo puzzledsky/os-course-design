@@ -21,7 +21,7 @@ Window::Window(QWidget *parent) :
     //ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     //ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
-    ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
 
@@ -46,6 +46,10 @@ Window::Window(QWidget *parent) :
 Window::~Window()
 {
     delete ui;
+}
+
+void Window::focusInEvent(QFocusEvent *event){
+    cout<<"focus"<<endl;
 }
 
 void Window::on_cLB_Login_clicked()
@@ -188,7 +192,7 @@ void Window::blockPrint(){
 void Window::initUserList(){
     //ui->lt_users->clear();//clear包括表头
     //ui->lt_users->setColumnCount(2);
-    //ui->lt_users->setRowCount(USER.size());
+    ui->lt_users->setRowCount(USER.size()+3);
     //ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     //ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
@@ -205,11 +209,11 @@ void Window::inodePrint(){
      int i=1;
      while (i<ISIZE*BLOCKTOI) {
          if(INODE[i].status==0)
-            setGrid(w,i/16,i%16,Qt::white);
+            setGrid(w,(i-1)/16,i%16,Qt::white);
          else if(INODE[i].type==2)
-            setGrid(w,i/16,i%16,Qt::blue);
+            setGrid(w,(i-1)/16,i%16,Qt::blue);
          else if(INODE[i].type==1)
-            setGrid(w,i/16,i%16,Qt::green);
+            setGrid(w,(i-1)/16,i%16,Qt::green);
          i++;
      }
 
@@ -240,12 +244,48 @@ void Window::on_tableWidget_cellClicked(int row, int column)
     }
     else if(num==1){
         s.append(u8"超级块\n");
+        s.append("---------------\n");
+        s.append(u8"inode区总块数:"+QString::number(sblock.isize/BLOCKTOI)+"\n");
+        s.append(u8"存储区总块数:"+QString::number(sblock.dsize)+"\n");
+        s.append(u8"inode区空闲队列长度:"+QString::number(sblock.ninode)+"\n");
+        s.append(u8"存储区空闲队列长度:"+QString::number(sblock.ndata)+"\n");
+        s.append("---------------\n");
+        s.append(u8"inode区空闲队列\n");
+        for(int i=sblock.ninode-1;i>0;i--){
+            s.append(QString::number(sblock.ifree[i])+" ");
+            if(sblock.ninode-i+1>20){
+                s.append("\n");
+                break;
+            }
+            if((sblock.ninode-i)%5==0)
+                s.append("\n");
+            else if(i==1){
+                s.append("\n");
+            }
+        }
+        s.append("---------------\n");
+        s.append(u8"存储区空闲队列\n");
+        for(int i=sblock.ndata-1;i>0;i--){
+            s.append(QString::number(sblock.dfree[i])+" ");
+            if(sblock.ndata-i+1>20){
+                s.append("\n");
+                break;
+            }
+            if((sblock.ndata-i)%5==0)
+                s.append("\n");
+            else if(i==1){
+                s.append("\n");
+            }
+        }
+        //for(int i=0;i<filsys.ifree)
+
         logInfo(s);
         return;
     }
     num-=1;
-    s.append(QString::number(num)+"\n");
+    s.append(QString::number(num));
     if(num<=ISIZE){
+        s.append(u8"  inode块\n");
         s.append(u8"inode范围:\n");
         s.append(QString::number(16*(num-1)+1));
         s.append(u8" - ");
@@ -261,6 +301,8 @@ void Window::on_tableWidget_cellClicked(int row, int column)
         logInfo(s);
         return;
     }
+    s.append(u8"  数据块\n");
+    s.append("---------------\n");
     s.append(QString::fromStdString(BLOCK[num].data)+"\n");
     logInfo(s);
 }
@@ -270,11 +312,17 @@ void Window::on_tableWidget_3_cellClicked(int row, int column)
     QString s=u8"";
 
     int n=16*row+column;
-    s.append(u8"inode号:"+QString::number(n));
+    n++;
+    s.append(u8"inode号:"+QString::number(n)+"\n");
+    if(INODE[n].type==-1){
+        s.append(u8"未使用\n");
+        return;
+    }
     s.append((INODE[n].type==1)?u8"\n类型:文件":u8"\n类型:目录");
     s.append(u8"\n用户ID:");
     s.append(QString::number(INODE[n].uid));
     s.append(u8"\n组ID:");
+    s.append(QString::number(INODE[n].gid));
     s.append(u8"\n权限:"+QString::number(INODE[n].right));
     s.append(u8"\n长度:"+QString::number(INODE[n].size));
     s.append(u8"\naddr[]信息:\n");
@@ -298,7 +346,9 @@ void Window::on_tableWidget_2_cellClicked(int row, int column)
     s.append(u8"磁盘inode号:"+QString::number(num));
     s.append((INODE[n].type==1)?u8"\n类型:文件":u8"\n类型:目录");
     s.append(u8"\n用户ID:");
+    s.append(QString::number(INODE[n].uid));
     s.append(u8"\n组ID:");
+    s.append(QString::number(INODE[n].gid));
     s.append(u8"\n权限:"+QString::number(INODE[num].right));
     s.append(u8"\n访问状态:");//是否加锁
     //s.append(u8"\n:访问计数：\t|");
