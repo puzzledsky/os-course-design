@@ -412,7 +412,7 @@ public:
 			return;
 		INODE[num[p]].setRight(right);
 	}
-	int getRight(string s, int right) {//返回0时查找失败
+	int getRight(string s) {//返回0时查找失败
 		int p = find(s);
 		if (p == -1)
 			return 0;
