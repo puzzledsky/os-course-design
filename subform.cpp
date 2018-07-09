@@ -199,6 +199,30 @@ void SubForm::getFun()
                 }
             }
         }
+    }else if(mlings.at(mling) == groups){
+        ui->textEdit->setTextColor(QColor(0,0,0));
+        ui->textEdit->append("group" + QString::number(Users::getGid(name.toStdString())));
+    }else if(mlings.at(mling) == usermod){
+        if(mlings.size() != 3){
+            outputerror("input error!");
+            return;
+        }else{
+            if(mlings.at(1) == "-r"){
+                Users::setGroup(name.toStdString());
+                outputerror("User is not in the group!");
+            }else if(mlings.at(1) == "-g"){
+                QString s = mlings.at(2);
+                if(s.startsWith("group")){
+                    Users::setGroup(name.toStdString(),s.toStdString());
+                    outputerror("User is in the group!");
+                }else{
+                    outputerror("into group fail!");
+                }
+            }else{
+                outputerror("the option function is not exit!");
+                return;
+            }
+        }
     }else if(mlings.at(mling) == chmod){
         QString s = mlings.at(1);
         int a = s.toInt();
@@ -475,6 +499,13 @@ void SubForm::storeFile(){
         ui->textEdit->setTextColor(QColor(0,0,0));
         ui->textEdit->setTextColor(QColor(255,0,255));
         ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+        ui->textEdit->setTextColor(QColor(0,0,0));
+    }
+}
+
+void SubForm::on_textEdit_cursorPositionChanged()
+{
+    if(!isEdit){
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
 }
