@@ -21,7 +21,7 @@ Window::Window(QWidget *parent) :
     //ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     //ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
-    ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     test();
 
@@ -188,7 +188,7 @@ void Window::blockPrint(){
 void Window::initUserList(){
     //ui->lt_users->clear();//clear包括表头
     //ui->lt_users->setColumnCount(2);
-    //ui->lt_users->setRowCount(USER.size());
+    ui->lt_users->setRowCount(USER.size()+3);
     //ui->lt_users->setHorizontalHeaderItem(0,new QTableWidgetItem("用户名"));
     //ui->lt_users->setHorizontalHeaderItem(1,new QTableWidgetItem("状态"));
     //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
