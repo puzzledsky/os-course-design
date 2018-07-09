@@ -171,5 +171,20 @@ void Users::loginOut(string n) {
 }
 int Users::getUid(string n) {
 	int p = findUser(n);
+	if (p == -1)
+		return -1;
 	return USER[p].uid;
+}
+void Users::setGroup(string user, string group) {
+	int p = findUser(user);
+	if (p == -1)
+		return;
+	if (group.length()>5)
+		USER[p].gid = group[5]-'0';
+}
+int Users::getGid(string n) {
+	int p = findUser(n);
+	if (p == -1)
+		return 0;
+	return USER[p].gid;
 }

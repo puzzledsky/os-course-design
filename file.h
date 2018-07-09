@@ -23,11 +23,11 @@ Users::loginOut("1");
 
 /*
 -----------文件权限问题 
-用户组
+-----用户组
 ----------------------内存显示
 目录文件的保存 inode的保存
 空闲表的显示
-文件不存在 读写问题
+-----文件不存在 读写问题
 ---------------------用户登出时 login out
 父目录和子目录同名
 更新时间 
@@ -45,6 +45,8 @@ public:
 	static void loginOut(string n);
 	static int getUid(string n);
 	static bool removeUser(string n);
+	static void setGroup(string user,string group);//group格式： group0,group1,... 默认都在group0
+	static int getGid(string n);
 };
 extern dir* newDir(string s);
 
@@ -275,12 +277,16 @@ private:
 		return -1;
 	}
 	bool haveRight(string user,string name,int method) { //method 1：读  2：写  3:执行
+		if (user == "root")
+			return true;
 		int id = Users::getUid(user);
 		int p = find(name);
 		if (INODE[num[p]].uid == id) {
 			return INODE[num[p]].getRight(10-method);
 		}
 		//组的放这里
+		if (INODE[num[p]].gid == Users::getGid(user))
+			return INODE[num[p]].getRight(7 - method);
 
 		return INODE[num[p]].getRight(4-method);
 	}
@@ -404,7 +410,9 @@ public:
 		if (p == -1)
 			return;
 		int uid =Users::getUid(user);
+		int gid = Users::getGid(user);
 		INODE[num[p]].uid = uid;
+		INODE[num[p]].gid = gid;
 	}
 	void setRight(string s, int right) {
 		int p = find(s);
@@ -488,18 +496,13 @@ public:
 	string password;
 	dir* pdir;
 	int uid;
+	int gid;
 	int status; // 0:离线 1:在线
 };
 extern vector<user> USER;
 extern dir* ROOT;
 extern dir* HOME;
 
-class group {
-
-};
-class Groups {
-
-};
 
 class print {
 public:
