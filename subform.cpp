@@ -93,9 +93,9 @@ void SubForm::getFun()
                 if(!t2.startsWith("/")){//t2表示一个文件名
                     int t0 = THIS->openFile(t2.toStdString(),name.toStdString(),2);
                     if(t0 == -1){
-                        //新建一个文件t2
+                        //重命名为t2
                         THIS->renameFile(t1.toStdString(),t2.toStdString());
-                        THIS->closeFlie(t1.toStdString(),2);
+                        THIS->closeFlie(t2.toStdString(),2);
                         outputerror("rename file success!");
                     }else if(t0 == -2){
                         outputerror("You have no property!");
@@ -104,19 +104,19 @@ void SubForm::getFun()
                     }else{
                         //修改文件内容
                         THIS->writeFile(t2.toStdString(),str);
+                        THIS->closeFlie(t2.toStdString(),2);
                         THIS->removeFile(t1.toStdString());
                         outputerror("modify file success!");
                     }
-                    THIS->closeFlie(t2.toStdString(),2);
                 }else if(t2.startsWith("/")){//t2表示新的文件路径
                     int tt = 0;
                     QStringList temp = t2.split("/");
                     //temp中保存文件的路径，根据路径访问文件等
                     for(int i = 0; i < temp.size(); i++){
                         if(temp[i] != ""){
-                            temp.removeAt(i);
                             tt = 0;
                         }else{
+                            temp.removeAt(i);
                             tt++;
                             if(tt == 2){
                                 outputerror("Input error!");
@@ -124,22 +124,37 @@ void SubForm::getFun()
                             }
                         }
                     }
-                    if(temp.at(0) == name){
-                        dir * p = USER;
-                        dir * q;
-                        QString s = temp.at(1);
-                        for(int i = 1; i < temp.size(); i++){
-                            s = temp.at(i);
-                            q = p->in(s.toStdString());
-                            if(q->getName() == p->getName()){
-                                outputerror("path not exit!");
-                                return;
-                            }
-                        }
-                        THIS->removeFile(t1.toStdString());
-                        q->addFile(t1.toStdString());
-                        q->writeFile(t1.toStdString(),str);
-                    }else{
+//                    if(temp.at(0) == name){
+//                        dir * p = USER;
+//                        dir * q;
+//                        QString s = temp.at(1);
+//                        for(int i = 1; i < temp.size(); i++){
+//                            s = temp.at(i);
+//                            q = p->in(s.toStdString());
+//                            if(q->getName() == p->getName()){
+//                                outputerror("path not exit!");
+//                                return;
+//                            }
+//                        }
+//                        int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+//                        if(a == -1){
+//                            THIS->removeFile(t1.toStdString());
+//                            q->addFile(t1.toStdString());
+//                            q->writeFile(t1.toStdString(),str);
+//                            q->closeFlie(t1.toStdString(),2);
+//                        }else if(a == -2){
+//                            outputerror("You have no property!");
+//                            return;
+//                        }else if(a == 0){
+//                            outputerror("The file is in use!");
+//                            return;
+//                        }else{
+//                            q->writeFile(t1.toStdString(),str);
+//                            THIS->removeFile(t1.toStdString());
+//                            q->closeFlie(t1.toStdString(),2);
+//                            outputerror("move file success!");
+//                        }
+//                    }else{
                         QString s = temp.at(0);
                         dir * p = HOME->in(s.toStdString());
                         if(p->getName() == "home"){
@@ -155,37 +170,82 @@ void SubForm::getFun()
                                     return;
                                 }
                             }
-                            THIS->removeFile(t1.toStdString());
-                            q->addFile(t1.toStdString());
-                            q->writeFile(t1.toStdString(),str);
+                            int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+                            if(a == -1){
+                                THIS->removeFile(t1.toStdString());
+                                q->addFile(t1.toStdString());
+                                q->writeFile(t1.toStdString(),str);
+                                q->closeFlie(t1.toStdString(),2);
+                            }else if(a == -2){
+                                outputerror("You have no property!");
+                                return;
+                            }else if(a == 0){
+                                outputerror("The file is in use!");
+                                return;
+                            }else{
+                                q->writeFile(t1.toStdString(),str);
+                                THIS->removeFile(t1.toStdString());
+                                q->closeFlie(t1.toStdString(),2);
+                                outputerror("move file success!");
+                            }
                         }
-                    }
+//                    }
                 }
             }
         }
     }
     else if(mlings.at(mling) == cat || mlings.at(mling) == rm || mlings[mling] == vi){
-        if(mlings.size() == 2){
 
-            if(mlings[mling] == vi){//创建新文件
-                QString tt = mlings.at(1);
-                int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
-                if(t == -1){
-                    THIS->addFile(tt.toStdString());
-                    isEdit = true;
-                    ui->textEdit->clear();
-                }else if(t == -2){
-                    outputerror("You have no property!");
-                }else if(t == 0){
-                    outputerror("The file is in use!");
-                }else{
-                    string str = THIS->readFile(tt.toStdString());
-                    isEdit = true;
-                    ui->textEdit->clear();
-                    ui->textEdit->append(QString::fromStdString(str));
+        if(mlings[mling] == vi){//创建新文件
+            if(mlings.size() == 3){
+                QString s = mlings.at(1);
+                int a = s.toInt();
+                if(a == 123 || a == 456 || a == 789){
+                    QString tt = mlings.at(2);
+                    int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+                    if(t == -1){
+                        THIS->addFile(tt.toStdString());
+                        THIS->setUser(tt.toStdString(),name.toStdString());
+                        THIS->setRight(tt.toStdString(),a);
+                        isEdit = true;
+                        ui->textEdit->clear();
+                    }else if(t == -2){
+                        outputerror("You have no property!");
+                    }else if(t == 0){
+                        outputerror("The file is in use!");
+                    }else{
+                        string str = THIS->readFile(tt.toStdString());
+                        THIS->setUser(tt.toStdString(),name.toStdString());
+                        THIS->setRight(tt.toStdString(),a);
+                        isEdit = true;
+                        ui->textEdit->clear();
+                        ui->textEdit->append(QString::fromStdString(str));
+                    }
                 }
-
-            }else if(mlings.at(mling) == rm){//删除文件
+                }else if(mlings.size() == 2){
+                    QString tt = mlings.at(1);
+                    int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
+                    if(t == -1){
+                        outputerror("file not exit!");
+                        return;
+                    }else if(t == -2){
+                        outputerror("you have no property!");
+                        return;
+                    }else if(t == 0){
+                        outputerror("The file is in use!");
+                        return;
+                    }else{
+                        string str = THIS->readFile(tt.toStdString());
+                        isEdit = true;
+                        ui->textEdit->clear();
+                        ui->textEdit->append(QString::fromStdString(str));
+                    }
+                }else{
+                    outputerror("quanxain error!");
+                }
+        }
+        else if(mlings.size() == 2){
+            if(mlings.at(mling) == rm){//删除文件
                 //输入文件名，删除文件
                 QString tt = mlings.at(1);
                 int t = THIS->openFile(tt.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
@@ -361,10 +421,14 @@ bool SubForm::eventFilter(QObject *obj, QEvent *event)
 void SubForm::storeFile(){
     QString t = ui->textEdit->toPlainText();
     QStringList mlist = t.split("\n");
-    t = mlist[mlist.size()-1];
+    t = mlist[mlist.size()-1];//t为此时输入的一条指令
     if(t == "$ :wq"){
         //新建一个文件
-        t = mlings.at(1);
+        if(mlings.size() == 3){
+            t = mlings.at(2);
+        }else{
+            t = mlings.at(1);
+        }
 //        THIS->addFile(t.toStdString());
 //        ui->textEdit->append(t + "-------------------");
         THIS->writeFile(t.toStdString(),newfile.toStdString());
