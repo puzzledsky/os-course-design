@@ -1,9 +1,10 @@
 ﻿#include "window.h"
 #include "ui_window.h"
 
-void test(){//测试代码
-    ROOT->addFile("1.txt");
-    ROOT->writeFile("1.txt","1111111111111111111111111111111111111111");
+void init(){//
+    ROOT = newDir("root");
+    HOME = ROOT->addDir("home");
+    Users::addUser("root","0");
 }
 
 Window::Window(QWidget *parent) :
@@ -14,7 +15,7 @@ Window::Window(QWidget *parent) :
 
     //ui配置
     ui->tableWidget->setRowCount(SIZE/16+1);
-    ui->tableWidget_2->setRowCount(MSIZE/10);
+    ui->tableWidget_2->setRowCount(MSIZE/12);
     //ui->tableWidget->setStyleSheet("selection-background-color:");
     ui->tableWidget_3->setRowCount(ISIZE);
    // ui->lt_users->horizontalHeader()->setStretchLastSection(true);
@@ -23,24 +24,15 @@ Window::Window(QWidget *parent) :
     //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
     //ui->lt_users->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    test();
-
-
-
+    init();
     //刷新
-    timer.setInterval(500);
+    timer.setInterval(400);
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     if(!timer.isActive())
         timer.start();
     qDebug()<<u8"主界面构造完毕";
 
     //ui->tableWidget->setStyleSheet("selection-background-color:");
-
-
-    test();
-    //刷新一次
-
-
 }
 
 Window::~Window()

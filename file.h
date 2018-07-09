@@ -12,7 +12,7 @@ using namespace std;
 const int SIZE = 310;//总块数
 const int ISIZE = 14;//保存inode的块数
 const int DSIZE = 300;//保存数据的块数
-const int MSIZE = 200;
+const int MSIZE = 144;
 const int BLOCKSIZE = 128;//一块的字节大小
 const int BLOCKTOI = 16;//一块保存inode数量
 /*

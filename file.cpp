@@ -31,8 +31,8 @@ void filsys::init() {
 	for (int i = 0; i < SIZE; i++) {
 		B_FLAG[i] = false;
 	}
-	ROOT = newDir("root");
-	HOME = ROOT->addDir("home");
+	//ROOT = newDir("root");
+	//HOME = ROOT->addDir("home");
 	UID = 100;
 }
 void filsys::i_setFree() {
@@ -139,11 +139,16 @@ bool Users::addUser(string n, string pas) {
 	p->name = n;
 	p->password = pas;
 	p->status = 0;
-	p->uid = UID;
+    if(n=="root")
+        p->uid=0;
+    else
+        p->uid = UID;
     p->gid = 0;
 	UID++;
 
-	HOME->addDir(n);
+	p->pdir = HOME->addDir(n);
+
+    //HOME->setRight(n,700);/*想设置自己目录私有*/
 	USER.push_back(*p);
 	return true;
 }
@@ -163,12 +168,16 @@ int Users::loginIn(string n, string pas) {
 	}
 	else {//成功
 		USER[x].status = 1;
+		REM.push(USER[x].pdir->num[1]);
 		return 1;
 	}
 }
 void Users::loginOut(string n) {
 	int x = findUser(n);
+	if (x == -1)
+		return;
 	USER[x].status = 0;
+	REM.pop(USER[x].pdir->num[1]);
 }
 int Users::getUid(string n) {
 	int p = findUser(n);
@@ -198,6 +207,7 @@ string Users::getName(int uid) {
 	}
 	return "";
 }
+
 /*dir定义*/
 //private
 int dir::getFree() {
@@ -263,7 +273,7 @@ dir::dir(string s) {
 }
 dir* dir::addDir(string s) {//s:目录名  //在当前目录下添加目录x
 
-	if (this->find(s) != -1) {
+    if (this->find(s,2) != -1) {
 		cerr << "命名冲突" << endl;
 		return NULL;
 	}
@@ -274,6 +284,8 @@ dir* dir::addDir(string s) {//s:目录名  //在当前目录下添加目录x
 	num[p] = x->num[1];
 	x->num[0] = num[1];
 	x->name[0] = name[1];
+	x->update();
+	update();
 	return x;
 }
 void dir::remove() {//删除目录自己，包括子目录和文件
