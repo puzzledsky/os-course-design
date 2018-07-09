@@ -25,12 +25,12 @@ private slots:
 
     //void on_pushButton_3_clicked();
     void focusInEvent (QFocusEvent * event);
-    void on_pushButton_3_clicked();
+    //void on_pushButton_3_clicked();
 
 private:
     Ui::widget_catalog *ui;
     void addchildren(QTreeWidgetItem *faItem,dir* faDir);
-    QTreeWidgetItem *proot=new QTreeWidgetItem(QStringList()<< QString::fromStdString("root"));
+    QTreeWidgetItem *proot;
 //    QTreeWidgetItem *pbin=new QTreeWidgetItem("bin");
 //    QTreeWidgetItem *pusr=new QTreeWidgetItem("usr");
 //    QTreeWidgetItem *pdev=new QTreeWidgetItem("dev");

@@ -612,9 +612,9 @@
    <property name="geometry">
     <rect>
      <x>630</x>
-     <y>300</y>
+     <y>360</y>
      <width>231</width>
-     <height>241</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -642,10 +642,10 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>80</y>
-     <width>121</width>
-     <height>131</height>
+     <x>30</x>
+     <y>85</y>
+     <width>131</width>
+     <height>141</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -685,13 +685,13 @@
     <string>内存inode号分配情况</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>410</x>
      <y>320</y>
      <width>171</width>
-     <height>16</height>
+     <height>19</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -750,13 +750,13 @@
     <string>外存inode号分配情况</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>100</x>
      <y>320</y>
      <width>171</width>
-     <height>16</height>
+     <height>19</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -802,6 +802,8 @@
     </item>
    </layout>
   </widget>
+  <zorder>label_11</zorder>
+  <zorder>label_12</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
