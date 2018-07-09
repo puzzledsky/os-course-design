@@ -54,7 +54,7 @@ private slots:
     void on_tableWidget_3_cellClicked(int row, int column);
 
     void on_tableWidget_2_cellClicked(int row, int column);
-
+    void focusInEvent (QFocusEvent * event);
 private:
     Ui::Window *ui;
     SubForm *form;

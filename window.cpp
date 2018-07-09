@@ -48,6 +48,10 @@ Window::~Window()
     delete ui;
 }
 
+void Window::focusInEvent(QFocusEvent *event){
+    cout<<"focus"<<endl;
+}
+
 void Window::on_cLB_Login_clicked()
 {
 
@@ -310,7 +314,7 @@ void Window::on_tableWidget_3_cellClicked(int row, int column)
     int n=16*row+column;
     n++;
     s.append(u8"inode号:"+QString::number(n)+"\n");
-    if(INODE[n].type=-1){
+    if(INODE[n].type==-1){
         s.append(u8"未使用\n");
         return;
     }

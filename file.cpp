@@ -190,6 +190,8 @@ int Users::getGid(string n) {
 	return USER[p].gid;
 }
 string Users::getName(int uid) {
+	if (uid == 0)
+		return "root";
 	for (int i = 0; i < USER.size(); i++) {
 		if (USER[i].uid == uid)
 			return USER[i].name;
@@ -376,7 +378,8 @@ string dir::getUser(string s) {
 	int p = find(s);
 	if (p == -1)
 		return "";
-	return Users::getName(USER[num[p]].uid);
+	int uid = INODE[num[p]].uid;
+	return Users::getName(uid);
 }
 void dir::setRight(string s, int right) {
 	int p = find(s);
