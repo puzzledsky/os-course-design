@@ -48,14 +48,13 @@ private:
     QString find = "find";//搜索文件，后接文件名
     QString rm = "rm";//删除文件，后接文件名 rm test.txt--------------
     QString cat = "cat";//显示文件内容，后接文件名 cat test.txt--------
-    QString mv = "mv";//文件更名或移动
+    QString mv = "mv";//文件更名或移动-------------------------------
     //文件路径写法 /uesr/test/test.txt
     QString vi = "vi";//新建一个文本文件，后接文件名，同时进入文本编辑器----
     QString wq = ":w q";//将文件写盘并退出vi--------------------------
     QString pwd = "pwd";//显示用户当前所在路径的全名--------------------
-    QString uesrmod = "usermod";//将用户加入用户组
-    QString groupadd = "groupadd";//新建一个用户组
-    QString chmod  = "chmod";//修改文件权限
+    QString usermod = "usermod";//将用户加入用户组和退出用户组usermod -g name groupname; uesrmod -r name groupname
+    QString chmod  = "chmod";//修改文件权限--------------------------
 
 };
 
