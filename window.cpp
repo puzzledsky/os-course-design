@@ -165,7 +165,7 @@ void Window::setGrid(QTableWidget* widget,int x,int y,QColor c){
 void Window::blockPrint(){
     QTableWidget *w=ui->tableWidget;
     setGrid(w,0,0,Qt::red);
-    setGrid(w,0,1,Qt::blue);
+    setGrid(w,0,1,QColor(0, 0, 138));
     int i=1;
     while (i<ISIZE) {
         if(B_FLAG[i])
@@ -176,7 +176,7 @@ void Window::blockPrint(){
     }
     while (i<SIZE) {
         if(B_FLAG[i])
-             setGrid(w,(i+1)/16,(i+1)%16,Qt::green);
+             setGrid(w,(i+1)/16,(i+1)%16,QColor(85, 170, 255));
         else
             setGrid(w,(i+1)/16,(i+1)%16,Qt::white);
 
@@ -194,7 +194,7 @@ void Window::initUserList(){
     //ui->lt_users->setHorizontalHeaderItem(2,new QTableWidgetItem("所在组"));
     for(int i=0;i<USER.size();i++){//表头不包含在行中
         ui->lt_users->setItem(i,0,new QTableWidgetItem(QString::fromStdString(USER[i].name)));
-        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?u8"已登录":u8"未登录"));
+        ui->lt_users->setItem(i,1,new QTableWidgetItem(USER[i].status==1?u8"在线":u8"登出"));
         ui->lt_users->setItem(i,2,new QTableWidgetItem(QString::number(USER[i].uid)));
         ui->lt_users->setItem(i,3,new QTableWidgetItem(QString::number(USER[i].gid)));
     }
@@ -205,11 +205,11 @@ void Window::inodePrint(){
      int i=1;
      while (i<ISIZE*BLOCKTOI) {
          if(INODE[i].status==0)
-            setGrid(w,(i-1)/16,i%16,Qt::white);
+            setGrid(w,(i-1)/16,(i-1)%16,Qt::white);
          else if(INODE[i].type==2)
-            setGrid(w,(i-1)/16,i%16,Qt::blue);
+            setGrid(w,(i-1)/16,(i-1)%16,QColor(85, 170, 255));
          else if(INODE[i].type==1)
-            setGrid(w,(i-1)/16,i%16,Qt::green);
+            setGrid(w,(i-1)/16,(i-1)%16,Qt::yellow);
          i++;
      }
 
@@ -224,7 +224,7 @@ void Window::memoryPrint(){
         else if(REM.flag[i]==0)
             setGrid(w,i/10,i%10,Qt::gray);
         else if(REM.flag[i]==1)
-            setGrid(w,i/10,i%10,Qt::green);
+            setGrid(w,i/10,i%10,QColor(85, 170, 255));
         i++;
     }
 }
@@ -308,8 +308,10 @@ void Window::on_tableWidget_3_cellClicked(int row, int column)
     QString s=u8"";
 
     int n=16*row+column;
-    n++;
+    n+=1;
     s.append(u8"inode号:"+QString::number(n)+"\n");
+    s.append(u8"状态:");
+    s.append(INODE[n].status==0?u8"未分配":u8"已分配");
     s.append((INODE[n].type==1)?u8"\n类型:文件":u8"\n类型:目录");
     s.append(u8"\n用户ID:");
     s.append(QString::number(INODE[n].uid));
