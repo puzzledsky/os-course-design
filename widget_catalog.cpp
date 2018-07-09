@@ -44,6 +44,11 @@ void widget_catalog::addchildren(QTreeWidgetItem *faItem,dir*faDir ){
     }
 }
 
+void widget_catalog::focusInEvent(QFocusEvent *event){
+    cout<<"focus"<<endl;
+    init();
+}
+
 void widget_catalog::on_pushButton_3_clicked()
 {
     init();

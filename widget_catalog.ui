@@ -10,6 +10,9 @@
     <height>494</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -21,6 +24,9 @@
      <width>171</width>
      <height>401</height>
     </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
    </property>
    <column>
     <property name="text">
@@ -36,6 +42,9 @@
      <width>631</width>
      <height>401</height>
     </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
    </property>
    <attribute name="verticalHeaderMinimumSectionSize">
     <number>15</number>
@@ -89,6 +98,9 @@
      <width>551</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">

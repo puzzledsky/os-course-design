@@ -23,6 +23,8 @@ public:
 private slots:
     void init();
 
+    //void on_pushButton_3_clicked();
+    void focusInEvent (QFocusEvent * event);
     void on_pushButton_3_clicked();
 
 private:
