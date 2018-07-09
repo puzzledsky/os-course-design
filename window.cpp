@@ -220,11 +220,11 @@ void Window::memoryPrint(){
     QTableWidget *w=ui->tableWidget_2;
     while (i<MSIZE) {
         if(REM.num[i]==0)
-            setGrid(w,i/10,i%10,Qt::white);
+            setGrid(w,i/12,i%12,Qt::white);
         else if(REM.flag[i]==0)
-            setGrid(w,i/10,i%10,Qt::gray);
+            setGrid(w,i/12,i%12,Qt::gray);
         else if(REM.flag[i]==1)
-            setGrid(w,i/10,i%10,QColor(85, 170, 255));
+            setGrid(w,i/12,i%12,QColor(85, 170, 255));
         i++;
     }
 }
@@ -241,9 +241,9 @@ void Window::on_tableWidget_cellClicked(int row, int column)
     else if(num==1){
         s.append(u8"超级块\n");
         s.append("---------------\n");
-        s.append(u8"inode区总块数:"+QString::number(sblock.isize/BLOCKTOI)+"\n");
-        s.append(u8"存储区总块数:"+QString::number(sblock.dsize)+"\n");
-        s.append(u8"inode区空闲队列长度:"+QString::number(sblock.ninode)+"\n");
+        s.append(u8"inode区块数:"+QString::number(sblock.isize/BLOCKTOI)+"\n");
+        s.append(u8"存储区块数:"+QString::number(sblock.dsize)+"\n");
+        s.append(u8"inode空闲队列长度:"+QString::number(sblock.ninode)+"\n");
         s.append(u8"存储区空闲队列长度:"+QString::number(sblock.ndata)+"\n");
         s.append("---------------\n");
         s.append(u8"inode区空闲队列\n");
@@ -336,7 +336,7 @@ void Window::on_tableWidget_2_cellClicked(int row, int column)
     QString s=u8"";
     int n=10*row+column;
     int num=REM.num[n];
-    s.append(u8"内存inode号:"+QString::number(n)+"\n");
+    s.append(u8"序号:"+QString::number(n)+"\n");
     s.append(u8"磁盘inode号:"+QString::number(num));
     s.append((INODE[n].type==1)?u8"\n类型:文件":u8"\n类型:目录");
     s.append(u8"\n用户ID:");
@@ -345,7 +345,11 @@ void Window::on_tableWidget_2_cellClicked(int row, int column)
     s.append(QString::number(INODE[n].gid));
     s.append(u8"\n权限:"+QString::number(INODE[num].right));
     s.append(u8"\n访问状态:");//是否加锁
-    //s.append(u8"\n:访问计数：\t|");
+    if(INODE[n].nread>0||INODE[n].nwrite>0)
+        s.append("已加锁");
+    else
+        s.append("未加锁");
+
     s.append(u8"\n长度:"+QString::number(INODE[num].size));
     s.append(u8"\naddr[]信息:\n");
     for(int i=0;i<8;i++){
