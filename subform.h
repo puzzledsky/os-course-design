@@ -23,11 +23,6 @@ public:
     void reactionFunction();
     void getFun();
     void outputerror(QString string);
-    void CD();
-    void MKDIR();
-    void LS();
-    void FIND();
-    void VI();//新建文件，存储文件内容，并将其加入目录中
     void setName(QString string);
     void storeFile();
 
@@ -60,6 +55,7 @@ private:
     QString pwd = "pwd";//显示用户当前所在路径的全名--------------------
     QString uesrmod = "usermod";//将用户加入用户组
     QString groupadd = "groupadd";//新建一个用户组
+    QString chmod  = "chmod";//修改文件权限
 
 };
 
