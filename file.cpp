@@ -139,16 +139,18 @@ bool Users::addUser(string n, string pas) {
 	p->name = n;
 	p->password = pas;
 	p->status = 0;
-    if(n=="root")
+    if(n=="sys")
         p->uid=0;
-    else
-        p->uid = UID;
-    p->gid = 0;
-	UID++;
-
+	else {
+		p->uid = UID;
+		UID++;
+	}
+	p->gid = 0;
 	p->pdir = HOME->addDir(n);
-
-    HOME->setRight(n,770);/*想设置自己目录私有*/
+	int x = p->pdir->num[1];
+	INODE[x].uid = p->uid;
+	INODE[x].gid = p->gid;
+	HOME->setRight(n,770);/*想设置自己目录私有*/
 	USER.push_back(*p);
 	return true;
 }
@@ -200,7 +202,7 @@ int Users::getGid(string n) {
 }
 string Users::getName(int uid) {
 	if (uid == 0)
-		return "root";
+		return "sys";
 	for (int i = 0; i < USER.size(); i++) {
 		if (USER[i].uid == uid)
 			return USER[i].name;
@@ -240,7 +242,7 @@ int dir::find(string s,int start) {//查找文件或者目录，返回在目录�
 	return -1;
 }
 bool dir::haveRight(string user, string name, int method) { //method 1：读  2：写  3:执行
-	if (user == "root")
+	if (user == "sys")
 		return true;
 	int id = Users::getUid(user);
 	int p = find(name);
@@ -330,7 +332,7 @@ bool dir::rename(string s) {//目录重命名
 	return false;
 }
 void dir::print() {//输出目录表
-	for (int i = 0; i < nsub; i++) {
+	for (int i = 2; i < nsub; i++) {
 		cout << name[i] << "  " << num[i] << endl;
 	}
 	cout << endl;
@@ -431,7 +433,7 @@ int dir::openFile(string s, string user, int method) {//返回值  -1:不存在 
 	return 0;
 }
 bool dir::openDir(string s, string user) {
-	if (user == "root")
+	if (user == "sys")
 		return true;
 
 	int p = find(s,2);
@@ -441,8 +443,9 @@ bool dir::openDir(string s, string user) {
 
 	if (INODE[num[p]].uid == id)
 		return true;
-	int gid = Users::getGid(user);
-	if(gid !=0 && INODE[num[p]].gid == gid && INODE[num[p]].getRight(6))
+	int gid1 = Users::getGid(user);
+	int gid2 = Users::getGid(Users::getName(INODE[num[p]].uid));
+	if(gid1 !=0 && gid1==gid2 && INODE[num[p]].getRight(6))
         return true;
     return INODE[num[p]].getRight(3);
 }
