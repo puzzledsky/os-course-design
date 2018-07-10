@@ -159,7 +159,7 @@ void SubForm::getFun()
                                     return;
                                 }
                             }
-                            THIS->closeFlie(t1.toStdString(),2);
+                            ui->textEdit->append(QString::fromStdString(q->getName()));
                             int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
                             if(a == -1){
                                 THIS->removeFile(t1.toStdString());
@@ -168,7 +168,6 @@ void SubForm::getFun()
                                 q->setRight(t1.toStdString(),THIS->getRight(t1.toStdString()));
                                 q->setUser(t1.toStdString(),name.toStdString());
                                 q->writeFile(t1.toStdString(),str);
-                                q->closeFlie(t1.toStdString(),2);
                                 outputerror("move file success!");
                             }else if(a == -2){
                                 outputerror("You have no property!");
@@ -179,13 +178,13 @@ void SubForm::getFun()
                             }else{
                                 q->writeFile(t1.toStdString(),str);
                                 q->setRight(t1.toStdString(),THIS->getRight(t1.toStdString()));
-                                //修改file的权限
+                                q->setUser(t1.toStdString(),name.toStdString());
                                 THIS->removeFile(t1.toStdString());
-                                q->closeFlie(t1.toStdString(),2);
                                 outputerror("move file success!");
                             }
+                            q->closeFlie(t1.toStdString(),2);
+                            THIS->closeFlie(t1.toStdString(),2);
                         }
-//                    }
                 }
             }
         }
