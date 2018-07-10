@@ -199,9 +199,9 @@ void Window::inodePrint(){
          if(INODE[i].status==0)
             setGrid(w,(i-1)/16,(i-1)%16,Qt::white);
          else if(INODE[i].type==2)
-            setGrid(w,(i-1)/16,(i-1)%16,QColor(85, 170, 255));
-         else if(INODE[i].type==1)
             setGrid(w,(i-1)/16,(i-1)%16,Qt::yellow);
+         else if(INODE[i].type==1)
+            setGrid(w,(i-1)/16,(i-1)%16,QColor(85, 170, 255));
          i++;
      }
 
