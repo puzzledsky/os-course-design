@@ -337,6 +337,32 @@ void dir::print() {//输出目录表
 	}
 	cout << endl;
 }
+string dir::lsPrint() {
+	string s = "";
+	for (int i = 2; i < nsub; i++) {
+		if (num[i] == 0)
+			continue;
+		inode* p = &INODE[num[i]];
+		s.append(p->type == 1 ? "file ":"dir  ");
+		s.append(to_string(p->right));
+		s.append(" ");
+		if (p->type == 1)
+			s.append("1");
+		else
+			s.append(to_string(p->pdir->fileNum()));
+		s.append(" ");
+		s.append(Users::getName(p->uid));
+		s.append(" ");
+		s.append("group");
+		s.append(to_string(p->gid));
+		s.append(" ");
+		s.append(to_string(p->size));
+		s.append(" ");
+		s.append(name[i]);
+		s.append("\n");
+	}
+	return s;
+}
 dir* dir::in(string s) {//进入子目录，失败时留在当前目录
 	int p = find(s);
 	if (p != -1 && INODE[num[p]].type == 2) {
@@ -492,4 +518,12 @@ void dir::writeFile(string s, string str) {//s：文件名，str：新的内容�
 }
 string dir::getName() {
 	return name[1];
+}
+int dir::fileNum() {
+	int n = 0;
+	for (int i = 2; i < nsub; i++) {
+		if (num[i] && INODE[num[i]].type == 1)
+			n++;
+	}
+	return n;
 }

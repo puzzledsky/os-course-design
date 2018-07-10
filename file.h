@@ -69,13 +69,14 @@ public:
 	int openFile(string s, string user, int method);
 	bool openDir(string s, string user);
 	void closeFlie(string s, int method);
-
+	string lsPrint();
 	bool removeFile(string s);
 	bool renameFile(string s, string name1);
 	string readFile(string s);
 	void writeFile(string s, string str);
 
 	string getName();
+	int fileNum();
 };
 class Users {
 public:
