@@ -12,7 +12,6 @@ Window::Window(QWidget *parent) :
     ui(new Ui::Window)
 {
     ui->setupUi(this);
-
     //ui配置
     ui->tableWidget->setRowCount(SIZE/16+1);
     ui->tableWidget_2->setRowCount(MSIZE/12);
@@ -30,6 +29,7 @@ Window::Window(QWidget *parent) :
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     if(!timer.isActive())
         timer.start();
+    this->setWindowTitle(u8"文件系统");
     qDebug()<<u8"主界面构造完毕";
 
     //ui->tableWidget->setStyleSheet("selection-background-color:");

@@ -8,6 +8,11 @@ SubForm::SubForm(QWidget *parent, QString string) :
     QDialog(parent),
     ui(new Ui::SubForm)
 {
+    Qt::WindowFlags flags = Qt::Dialog;//最小化
+    flags |= Qt::WindowMinimizeButtonHint;
+    flags |= Qt::WindowCloseButtonHint;
+    setWindowFlags(flags);
+
     ui->setupUi(this);
     isEdit = false;
     endEdit = false;
