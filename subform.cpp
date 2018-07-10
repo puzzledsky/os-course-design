@@ -345,7 +345,7 @@ void SubForm::getFun()
         }else if(mlings.size() == 2){
              QString s = mlings.at(1);
              if(s == "-l"){
-
+                 ui->textEdit->append(QString::fromStdString(THIS->lsPrint()));
              }else{
                  outputerror("option function error!");
              }
