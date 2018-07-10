@@ -290,6 +290,7 @@ dir* dir::addDir(string s) {//s:目录名  //在当前目录下添加目录x
 	if (pa != NULL) {
 		INODE[x->num[1]].uid = INODE[pa->num[1]].uid;
 	}
+	INODE[x->num[1]].gid = 0;
 	x->update();
 	update();
 	return x;
