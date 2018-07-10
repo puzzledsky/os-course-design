@@ -162,12 +162,12 @@ void SubForm::getFun()
                             ui->textEdit->append(QString::fromStdString(q->getName()));
                             int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
                             if(a == -1){
-                                THIS->removeFile(t1.toStdString());
                                 //设置file的权限
                                 q->addFile(t1.toStdString());
                                 q->setRight(t1.toStdString(),THIS->getRight(t1.toStdString()));
                                 q->setUser(t1.toStdString(),name.toStdString());
                                 q->writeFile(t1.toStdString(),str);
+                                THIS->removeFile(t1.toStdString());
                                 outputerror("move file success!");
                             }else if(a == -2){
                                 outputerror("You have no property!");
