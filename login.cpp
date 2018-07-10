@@ -6,7 +6,7 @@ Login::Login(QWidget *parent,QString name,QString pwd) :
     ui(new Ui::Login)
 {
     ui->setupUi(this);
-    this->setWindowTitle(u8"登录");
+    this->setWindowTitle("login");
     ui->lineEdit_name->setText(name);
     ui->lineEdit_pwd->setText(pwd);
 }
