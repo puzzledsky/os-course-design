@@ -6,9 +6,6 @@ widget_catalog::widget_catalog(QWidget *parent) :
     ui(new Ui::widget_catalog)
 {
     ui->setupUi(this);
-    this->setWindowTitle(u8"文件资源查看");
-    ui->table_file->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->table_file->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
     init();
 //    timer.setInterval(8000);
 //    connect(&timer,SIGNAL(timeout()),this,SLOT(init()));
