@@ -164,7 +164,7 @@ void SubForm::getFun()
                             dir * q = p;
                             for(int i = 1; i < temp.size(); i++){
                                 s = temp.at(i);
-                                ui->textEdit->append(s);
+//                                ui->textEdit->append(s);
                                 q = p->in(s.toStdString());
                                 if(p->getName() == q->getName()){
                                     outputerror("path not exit!");
@@ -178,7 +178,7 @@ void SubForm::getFun()
                                 }
                                 p = q;
                             }
-                            ui->textEdit->append(QString::fromStdString(q->getName()));
+//                            ui->textEdit->append(QString::fromStdString(q->getName()));
                             int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
                             if(a == -1){
                                 //设置file的权限
@@ -399,7 +399,7 @@ void SubForm::getFun()
                 return;
             }
             for(int i = 2; i < p->nsub; i++){
-                ui->textEdit->append(QString::fromStdString(p->getName()));
+//                ui->textEdit->append(QString::fromStdString(p->getName()));
                 if(p->num[i] != 0){
                     ui->textEdit->append(QString::fromStdString(p->name[i]));
                     num1++;
