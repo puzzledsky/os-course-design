@@ -15,7 +15,7 @@ SubForm::SubForm(QWidget *parent, QString string) :
     ui->textEdit->setFocus();
     ui->textEdit->installEventFilter(this);
     ui->textEdit->setTextColor(QColor(255,0,255));
-    ui->textEdit->append(name + " /" + name + "\n$ ");
+    ui->textEdit->append(name + " /root/home/" + name + "\n$ ");
     ui->textEdit->setTextColor(QColor(0,0,0));
     this->setWindowTitle(name);
 }
@@ -47,7 +47,15 @@ void SubForm::returnReaction()
 {
     if(!isEdit){
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+        QString b;
+        dir *p = THIS;
+        while(p->getName() != "root"){
+//            a.append(p->getName());
+            b = "/" + QString::fromStdString(p->getName()) + b;
+            p = p->out();
+        }
+        b = "/root" + b;
+        ui->textEdit->append("\n" + name + " " + b + "\n$ ");
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
 }
@@ -88,11 +96,14 @@ void SubForm::getFun()
             int t = THIS->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
             if(t == -1){
                 outputerror("File not exit!");
+                THIS->closeFlie(t1.toStdString(),2);
                 return;
             }else if(t == -2){
                 outputerror("You have no property!");
+                THIS->closeFlie(t1.toStdString(),2);
             }else if(t == 0){
                 outputerror("The file is in use!");
+                THIS->closeFlie(t1.toStdString(),2);
             }else{
                 string str = THIS->readFile(t1.toStdString());
                 if(!t2.startsWith("/")){//t2表示一个文件名
@@ -101,16 +112,20 @@ void SubForm::getFun()
                         //重命名为t2
                         THIS->renameFile(t1.toStdString(),t2.toStdString());
                         THIS->closeFlie(t2.toStdString(),2);
+                        THIS->closeFlie(t1.toStdString(),2);
                         outputerror("rename file success!");
                     }else if(t0 == -2){
                         outputerror("You have no property!");
+                        THIS->closeFlie(t2.toStdString(),2);
                     }else if(t == 0){
                         outputerror("The file is in use!");
+                        THIS->closeFlie(t2.toStdString(),2);
                     }else{
                         //将file1重命名为file2，并删除file2
                         THIS->removeFile(t2.toStdString());
                         THIS->renameFile(t1.toStdString(),t2.toStdString());
                         THIS->closeFlie(t2.toStdString(),2);
+                        THIS->closeFlie(t1.toStdString(),2);
                         outputerror("modify file success!");
                     }
                 }else if(t2.startsWith("/")){//t2表示新的文件路径
@@ -129,38 +144,6 @@ void SubForm::getFun()
                             }
                         }
                     }
-/*                    if(temp.at(0) == name){
-                        dir * p = USER;
-                        dir * q;
-                        QString s = temp.at(1);
-                        for(int i = 1; i < temp.size(); i++){
-                            s = temp.at(i);
-                            q = p->in(s.toStdString());
-                            if(q->getName() == p->getName()){
-                                outputerror("path not exit!");
-                                return;
-                            }
-                        }
-                        int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
-                        if(a == -1){
-                            THIS->removeFile(t1.toStdString());
-                            q->addFile(t1.toStdString());
-                            q->writeFile(t1.toStdString(),str);
-                            q->closeFlie(t1.toStdString(),2);
-                        }else if(a == -2){
-                            outputerror("You have no property!");
-                            return;
-                        }else if(a == 0){
-                            outputerror("The file is in use!");
-                            return;
-                        }else{
-                            q->writeFile(t1.toStdString(),str);
-                            THIS->removeFile(t1.toStdString());
-                            q->closeFlie(t1.toStdString(),2);
-                            outputerror("move file success!");
-                        }
-                    }else{
-*/
                         QString s = temp.at(0);
                         dir * p = HOME->in(s.toStdString());
                         if(p->getName() == "home"){
@@ -176,12 +159,14 @@ void SubForm::getFun()
                                     return;
                                 }
                             }
+                            THIS->closeFlie(t1.toStdString(),2);
                             int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
                             if(a == -1){
                                 THIS->removeFile(t1.toStdString());
                                 //设置file的权限
-                                q->setRight(t1.toStdString(),THIS->getRight(t1.toStdString()));
                                 q->addFile(t1.toStdString());
+                                q->setRight(t1.toStdString(),THIS->getRight(t1.toStdString()));
+                                q->setUser(t1.toStdString(),name.toStdString());
                                 q->writeFile(t1.toStdString(),str);
                                 q->closeFlie(t1.toStdString(),2);
                                 outputerror("move file success!");
@@ -280,6 +265,8 @@ void SubForm::getFun()
                         outputerror("You have no property!");
                     }else if(t == 0){
                         outputerror("The file is in use!");
+                    }else if(t == -3){
+                        outputerror("there is a dir that has the same name!");
                     }else{
                         string str = THIS->readFile(tt.toStdString());
                         THIS->setUser(tt.toStdString(),name.toStdString());
@@ -302,6 +289,8 @@ void SubForm::getFun()
                     }else if(t == 0){
                         outputerror("The file is in use!");
                         return;
+                    }else if(t == -3){
+                        outputerror("there is a dir that has the same name!");
                     }else{
                         string str = THIS->readFile(tt.toStdString());
                         isEdit = true;
@@ -354,7 +343,13 @@ void SubForm::getFun()
                     ui->textEdit->append(QString::fromStdString(THIS->name[i]));
                 }
             }
+        }else if(mlings.size() == 2){
+             QString s = mlings.at(1);
+             if(s == "-l"){
 
+             }else{
+                 outputerror("option function error!");
+             }
         }else{
             outputerror("Input error!");
         }
@@ -436,7 +431,11 @@ void SubForm::getFun()
                 QString t = mlings.at(1);
                 dir *p = THIS->in(t.toStdString());
                 if(p->getName() != THIS->getName()){
-                    THIS = p;
+                    if(THIS->openDir(t.toStdString(),name.toStdString())){
+                        THIS = p;
+                    }else{
+                        outputerror("You have no property to get into the dir!");
+                    }
                 }else{
                     outputerror("dir not exit!");
                 }
@@ -573,7 +572,17 @@ void SubForm::storeFile(){
         THIS->closeFlie(t.toStdString(),2);
         outputerror("File store success!");
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+
+        QString b;
+        dir *p = THIS;
+        while(p->getName() != "root"){
+//            a.append(p->getName());
+            b = "/" + QString::fromStdString(p->getName()) + b;
+            p = p->out();
+        }
+        b = "/root" + b;
+        ui->textEdit->append("\n" + name + " " + b + "\n$ ");
+
         ui->textEdit->setTextColor(QColor(0,0,0));
         isEdit = false;
         endEdit = false;
@@ -582,7 +591,17 @@ void SubForm::storeFile(){
         ui->textEdit->append("illegal!");
         ui->textEdit->setTextColor(QColor(0,0,0));
         ui->textEdit->setTextColor(QColor(255,0,255));
-        ui->textEdit->append("\n" + QString::fromStdString(THIS->getName()) + " /" + QString::fromStdString(THIS->getName()) + "\n$ ");
+
+        QString b;
+        dir *p = THIS;
+        while(p->getName() != "root"){
+//            a.append(p->getName());
+            b = "/" + QString::fromStdString(p->getName()) + b;
+            p = p->out();
+        }
+        b = "/root" + b;
+        ui->textEdit->append("\n" + name + " " + b + "\n$ ");
+
         ui->textEdit->setTextColor(QColor(0,0,0));
     }
 }
