@@ -67,6 +67,7 @@ public:
 	void setRight(string s, int right);
 	int getRight(string s);
 	int openFile(string s, string user, int method);
+	bool openDir(string s, string user);
 	void closeFlie(string s, int method);
 
 	bool removeFile(string s);

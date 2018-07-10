@@ -148,7 +148,7 @@ bool Users::addUser(string n, string pas) {
 
 	p->pdir = HOME->addDir(n);
 
-    //HOME->setRight(n,700);/*想设置自己目录私有*/
+    HOME->setRight(n,770);/*想设置自己目录私有*/
 	USER.push_back(*p);
 	return true;
 }
@@ -273,7 +273,7 @@ dir::dir(string s) {
 }
 dir* dir::addDir(string s) {//s:目录名  //在当前目录下添加目录x
 
-    if (this->find(s,2) != -1) {
+    if (this->find(s,1) != -1) {
 		cerr << "命名冲突" << endl;
 		return NULL;
 	}
@@ -350,7 +350,7 @@ dir* dir::out() {//返回上一级目录，失败时留在当前目录
 	return INODE[num[0]].pdir;
 }
 int dir::findFile(string s) {//根据文件名找文件，没找到则返回-1
-	int p = find(s);
+	int p = find(s,2);
 	if (p != -1 && INODE[num[p]].type != 1) {
 		p = -1;
 	}
@@ -365,7 +365,7 @@ inode* dir::getFile(string s) {//在当前目录查找指定文件，返回inode
 	return &INODE[p];
 }
 bool dir::addFile(string s) {//s：文件名，添加文件
-    int x=find(s,2);
+    int x=find(s,1);
     if (x!= -1){// 命名冲突判断
 		return false;
     }
@@ -378,7 +378,7 @@ bool dir::addFile(string s) {//s：文件名，添加文件
 	return true;
 }
 void dir::setUser(string s, string user) {
-	int p = find(s);
+	int p = find(s,2);
 	if (p == -1)
 		return;
 	int uid = Users::getUid(user);
@@ -387,20 +387,20 @@ void dir::setUser(string s, string user) {
 	INODE[num[p]].gid = gid;
 }
 string dir::getUser(string s) {
-	int p = find(s);
+	int p = find(s,2);
 	if (p == -1)
 		return "";
 	int uid = INODE[num[p]].uid;
 	return Users::getName(uid);
 }
 void dir::setRight(string s, int right) {
-	int p = find(s);
+	int p = find(s,2);
 	if (p == -1)
 		return;
 	INODE[num[p]].setRight(right);
 }
 int dir::getRight(string s) {//返回0时查找失败
-	int p = find(s);
+	int p = find(s,2);
 	if (p == -1)
 		return 0;
 	return INODE[num[p]].right;
@@ -408,8 +408,14 @@ int dir::getRight(string s) {//返回0时查找失败
 int dir::openFile(string s, string user, int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
 	int p = findFile(s);	                    //method 1：读  2：写   3:执行
 	//cout << "p--index:" << p << endl;
-	if (p == -1)
-		return -1;
+	
+	if (p == -1) {
+		dir* x = in(s);
+		if (x == this)
+			return -1;
+		else
+			return -3;
+	}
 	if (!haveRight(user, s, method))
 		return -2;
 	if (INODE[num[p]].nwrite == 1)
@@ -423,6 +429,18 @@ int dir::openFile(string s, string user, int method) {//返回值  -1:不存在 
 		return 1;
 	}
 	return 0;
+}
+bool dir::openDir(string s, string user) {
+	if (user == "root")
+		return true;
+
+	int p = find(s,2);
+	if (p == -1||INODE[num[p]].type==1)
+		return false;
+	int id = Users::getUid(user);
+	if (INODE[num[p]].uid == id)
+		return true;
+	return INODE[num[p]].getRight(9) || INODE[num[p]].getRight(6);
 }
 void dir::closeFlie(string s, int method) {//method 1：读  2：写
 	int p = findFile(s);
