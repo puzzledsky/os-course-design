@@ -6,7 +6,7 @@ Dialog_adduser::Dialog_adduser(QWidget *parent,QString name,QString pwd) :
     ui(new Ui::Dialog_adduser)
 {
     ui->setupUi(this);
-    this->setWindowTitle("new user");
+    this->setWindowTitle(u8"添加用户");
     ui->lineEdit_name->setText(name);
     ui->lineEdit_pwd->setText(pwd);
 }

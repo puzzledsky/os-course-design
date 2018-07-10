@@ -30,8 +30,8 @@ Window::Window(QWidget *parent) :
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     if(!timer.isActive())
         timer.start();
-    this->setWindowTitle("file system");
-   // qDebug()<<u8"主界面构造完毕";
+    this->setWindowTitle(u8"文件系统");
+    qDebug()<<u8"主界面构造完毕";
 
     //ui->tableWidget->setStyleSheet("selection-background-color:");
 }
