@@ -286,6 +286,10 @@ dir* dir::addDir(string s) {//s:目录名  //在当前目录下添加目录x
 	num[p] = x->num[1];
 	x->num[0] = num[1];
 	x->name[0] = name[1];
+	dir* pa = x->getParent();
+	if (pa != NULL) {
+		INODE[x->num[1]].uid = INODE[pa->num[1]].uid;
+	}
 	x->update();
 	update();
 	return x;
