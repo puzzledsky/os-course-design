@@ -4,7 +4,7 @@
 void init(){//
     ROOT = newDir("root");
     HOME = ROOT->addDir("home");
-    Users::addUser("root","0");
+    Users::addUser("sys","0");
 }
 
 Window::Window(QWidget *parent) :
