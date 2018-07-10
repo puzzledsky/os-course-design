@@ -149,20 +149,20 @@ void SubForm::getFun()
                             }
                         }
                     }
-                        QString s = temp.at(0);
-                        dir * p = HOME->in(s.toStdString());
-                        if(!HOME->openDir(s.toStdString(),name.toStdString())){
+                        QString s = temp.at(1);
+                        dir * p = ROOT->in(s.toStdString());
+                        if(!ROOT->openDir(s.toStdString(),name.toStdString())){
                             outputerror("You have no property to open the dir!");
                             THIS->closeFlie(t1.toStdString(),2);
                             return;
                         }
-                        if(p->getName() == "home"){
-                            outputerror("dir is not exit!p == home!");
+                        if(p->getName() == "root"){
+                            outputerror("dir is not exit!p == root!");
                             THIS->closeFlie(t1.toStdString(),2);
                             return;
                         }else{
                             dir * q = p;
-                            for(int i = 1; i < temp.size(); i++){
+                            for(int i = 2; i < temp.size(); i++){
                                 s = temp.at(i);
 //                                ui->textEdit->append(s);
                                 q = p->in(s.toStdString());
@@ -194,7 +194,7 @@ void SubForm::getFun()
                                 q->closeFlie(t1.toStdString(),2);
                                 return;
                             }else if(a == 0){
-                                outputerror("The file is in use!");
+                                outputerror("The file is alreay in the dir!");
                                 THIS->closeFlie(t1.toStdString(),2);
                                 q->closeFlie(t1.toStdString(),2);
                                 return;
@@ -401,7 +401,7 @@ void SubForm::getFun()
             for(int i = 2; i < p->nsub; i++){
 //                ui->textEdit->append(QString::fromStdString(p->getName()));
                 if(p->num[i] != 0){
-                    ui->textEdit->append(QString::fromStdString(p->name[i]));
+//                    ui->textEdit->append(QString::fromStdString(p->name[i]));
                     num1++;
                 }
             }
@@ -500,19 +500,19 @@ void SubForm::getFun()
                         }
                     }
                 }
-                QString s = temp.at(0);
-                dir * p = HOME->in(s.toStdString());
-                if(!HOME->openDir(s.toStdString(),name.toStdString())){
+                QString s = temp.at(1);
+                dir * p = ROOT->in(s.toStdString());
+                if(!ROOT->openDir(s.toStdString(),name.toStdString())){
                     outputerror("You have no property to open the dir!");
-                    THIS->closeFlie(t1.toStdString(),2);
+                    THIS->closeFlie(t1.toStdString(),1);
                     return;
                 }
-                if(p->getName() == "home"){
-                    outputerror("dir is not exit!p == home!");
+                if(p->getName() == "root"){
+                    outputerror("dir is not exit!p == root!");
                     return;
                 }else{
                     dir * q = p;
-                    for(int i = 1; i < temp.size()-1; i++){
+                    for(int i = 2; i < temp.size()-1; i++){
                         s = temp.at(i);
                         q = p->in(s.toStdString());
                         if(p->getName() == q->getName()){
@@ -521,7 +521,7 @@ void SubForm::getFun()
                         }
                         if(!p->openDir(s.toStdString(),name.toStdString())){
                             outputerror("You have no property to open the dir!");
-                            THIS->closeFlie(t1.toStdString(),2);
+                            THIS->closeFlie(t1.toStdString(),1);
                             return;
                         }
                         p = q;
