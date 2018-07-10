@@ -151,18 +151,32 @@ void SubForm::getFun()
                     }
                         QString s = temp.at(0);
                         dir * p = HOME->in(s.toStdString());
+                        if(!HOME->openDir(s.toStdString(),name.toStdString())){
+                            outputerror("You have no property to open the dir!");
+                            THIS->closeFlie(t1.toStdString(),2);
+                            return;
+                        }
                         if(p->getName() == "home"){
                             outputerror("dir is not exit!p == home!");
+                            THIS->closeFlie(t1.toStdString(),2);
                             return;
                         }else{
                             dir * q = p;
                             for(int i = 1; i < temp.size(); i++){
                                 s = temp.at(i);
+                                ui->textEdit->append(s);
                                 q = p->in(s.toStdString());
                                 if(p->getName() == q->getName()){
                                     outputerror("path not exit!");
+                                    THIS->closeFlie(t1.toStdString(),2);
                                     return;
                                 }
+                                if(!p->openDir(s.toStdString(),name.toStdString())){
+                                    outputerror("You have no property to open the dir!");
+                                    THIS->closeFlie(t1.toStdString(),2);
+                                    return;
+                                }
+                                p = q;
                             }
                             ui->textEdit->append(QString::fromStdString(q->getName()));
                             int a = q->openFile(t1.toStdString(),name.toStdString(),2);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
@@ -176,9 +190,13 @@ void SubForm::getFun()
                                 outputerror("move file success!");
                             }else if(a == -2){
                                 outputerror("You have no property!");
+                                THIS->closeFlie(t1.toStdString(),2);
+                                q->closeFlie(t1.toStdString(),2);
                                 return;
                             }else if(a == 0){
                                 outputerror("The file is in use!");
+                                THIS->closeFlie(t1.toStdString(),2);
+                                q->closeFlie(t1.toStdString(),2);
                                 return;
                             }else{
                                 q->writeFile(t1.toStdString(),str);
@@ -188,8 +206,8 @@ void SubForm::getFun()
                                 outputerror("move file success!");
                             }
                             q->closeFlie(t1.toStdString(),2);
-                            THIS->closeFlie(t1.toStdString(),2);
                         }
+                        THIS->closeFlie(t1.toStdString(),2);
                 }
             }
         }
@@ -464,8 +482,8 @@ void SubForm::getFun()
                 }else{
                     string s = THIS->readFile(t1.toStdString());
                     ui->textEdit->append(QString::fromStdString(s));
-                    THIS->closeFlie(t1.toStdString(),1);
                 }
+                THIS->closeFlie(t1.toStdString(),1);
             }else if(t1.startsWith("/")){//t2表示新的文件路径
                 int tt = 0;
                 QStringList temp = t1.split("/");
@@ -484,6 +502,11 @@ void SubForm::getFun()
                 }
                 QString s = temp.at(0);
                 dir * p = HOME->in(s.toStdString());
+                if(!HOME->openDir(s.toStdString(),name.toStdString())){
+                    outputerror("You have no property to open the dir!");
+                    THIS->closeFlie(t1.toStdString(),2);
+                    return;
+                }
                 if(p->getName() == "home"){
                     outputerror("dir is not exit!p == home!");
                     return;
@@ -496,6 +519,12 @@ void SubForm::getFun()
                             outputerror("path not exit!");
                             return;
                         }
+                        if(!p->openDir(s.toStdString(),name.toStdString())){
+                            outputerror("You have no property to open the dir!");
+                            THIS->closeFlie(t1.toStdString(),2);
+                            return;
+                        }
+                        p = q;
                     }
                     QString fname = temp.at(temp.size()-1);
                     int a = q->openFile(fname.toStdString(),name.toStdString(),1);//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
@@ -503,15 +532,13 @@ void SubForm::getFun()
                         outputerror("file not exit!");
                     }else if(a == -2){
                         outputerror("You have no property!");
-                        return;
                     }else if(a == 0){
                         outputerror("The file is in use!");
-                        return;
                     }else{
                         string s = q->readFile(fname.toStdString());
                         ui->textEdit->append(QString::fromStdString(s));
-                        q->closeFlie(fname.toStdString(),1);
                     }
+                    q->closeFlie(fname.toStdString(),1);
                 }
             }
         }
