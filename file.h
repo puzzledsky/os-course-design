@@ -131,7 +131,7 @@ public:
 			}
 		}
 		if (p == -1) {
-			cerr << "内存已满" << endl;
+			cerr << "memory is full" << endl;
 			return;
 		}
 		num[p] = x;
@@ -182,7 +182,7 @@ private:
 	string data;
 	void write() {
 		if (data.length() > 8 * BLOCKSIZE) {
-			cerr << "存储空间不足" << endl;
+			cerr << "space is full" << endl;
 			return;
 		}
 		int i = 0;

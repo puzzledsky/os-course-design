@@ -57,7 +57,7 @@ int filsys::i_get() {
 	if (ninode == 0) {
 		i_setFree();
 		if (ninode == 0) {
-			cerr << "inode区空间不足" << endl;
+			cerr << "inode space is full" << endl;
 			return -1;
 		}
 	}
@@ -76,7 +76,7 @@ int filsys::d_get() {
 	if (ndata == 0) {
 		d_setFree();
 		if (ndata == 0) {
-			cerr << "存储区空间不足" << endl;
+			cerr << "space is full" << endl;
 			return -1;
 		}
 	}
@@ -132,7 +132,7 @@ int Users::findUser(string n) {
 }
 bool Users::addUser(string n, string pas) {
 	if (findUser(n) != -1) {
-		cerr << "用户名冲突" << endl;
+        cerr << "user"+ n +" is exist" << endl;
 		return false;
 	}
 	user *p = new user;
@@ -155,15 +155,15 @@ bool Users::addUser(string n, string pas) {
 int Users::loginIn(string n, string pas) {
 	int x = findUser(n);
 	if (x == -1) {
-		cerr << "用户不存在" << endl;
+		cerr << "user is not exist" << endl;
 		return -1;
 	}
 	else if (USER[x].status == 1) {
-		cerr << "用户已登录" << endl;
+		cerr << "user is online" << endl;
 		return 0;
 	}
 	else if (USER[x].password != pas) {
-		cerr << "密码错误" << endl;
+		cerr << "password is error" << endl;
 		return -2;
 	}
 	else {//成功
@@ -407,7 +407,7 @@ int dir::getRight(string s) {//返回0时查找失败
 }
 int dir::openFile(string s, string user, int method) {//返回值  -1:不存在 -2:无权限 0:被占用  1:成功
 	int p = findFile(s);	                    //method 1：读  2：写   3:执行
-	cout << "p--index:" << p << endl;
+	//cout << "p--index:" << p << endl;
 	if (p == -1)
 		return -1;
 	if (!haveRight(user, s, method))
@@ -459,6 +459,10 @@ string dir::readFile(string s) {//  返回文件全部内容
 }
 void dir::writeFile(string s, string str) {//s：文件名，str：新的内容（全部） 重写文件 
 	int p = findFile(s);
+    if(p==-1){
+        cerr<<s+"write fail"<<endl;
+        return;
+    }
 	INODE[num[p]].setData(str);
 }
 string dir::getName() {
