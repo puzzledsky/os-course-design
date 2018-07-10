@@ -440,7 +440,9 @@ bool dir::openDir(string s, string user) {
 	int id = Users::getUid(user);
 	if (INODE[num[p]].uid == id)
 		return true;
-	return INODE[num[p]].getRight(9) || INODE[num[p]].getRight(6);
+    if(INODE[num[p]].gid!=0 && INODE[num[p]].getRight(6))
+        return true;
+    return INODE[num[p]].getRight(3);
 }
 void dir::closeFlie(string s, int method) {//method 1：读  2：写
 	int p = findFile(s);
