@@ -1,1 +1,1 @@
-A simple file system like linux written with qt.
+A simple linux file system written with qt.
